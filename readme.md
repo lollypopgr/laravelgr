@@ -1,4 +1,4 @@
-## Laravel.gr Greek Funs Page
+## Laravel.gr Greek Fans Page
 
 [Based on the Laravel Framework and a few other awesome scripts]
 
