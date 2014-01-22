@@ -13,7 +13,7 @@ return array(
     |
     */
 
-    'title' => 'Greek Documentation for Laravel',
+    'title' => 'Laravel Documentation [GR]',
 
     /*
     |--------------------------------------------------------------------------
