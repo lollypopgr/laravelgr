@@ -13,3 +13,8 @@ Feel free to do what ever you want. Its a base for the Greek fan page.
 - [x] Twitter timeline (What Community followers Tweet). Want to be included? Just use #laravelgr
 - [x] Forum Integration
 - [x] NewsLetter Signup
+
+
+## Laravel.gr Docs
+
+If you want to translate the docs in Greek Language start translating the /docs folder.
