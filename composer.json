@@ -7,7 +7,8 @@
 		"laravel/framework": "4.1.*",
 		"thujohn/twitter": "dev-master",
 		"intervention/image": "dev-master",
-		"intervention/imagecache": "dev-master"
+		"intervention/imagecache": "dev-master",
+		"dflydev/markdown": "1.0.*@dev"
 	},
 	"autoload": {
 		"classmap": [
