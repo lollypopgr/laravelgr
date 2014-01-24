@@ -1,13 +1,14 @@
-/* Artfully masterminded by ZURB  */
+@import "settings";
 
-// Table of Content
-//-----------------------------------------
-// - Shared Styles
-// - Page Name 1
-// - Page Name 2
+// Importing all of Foundation
+@import "ZURB-foundation";
 
-// Shared Styles
+body {
+  background: url(../images/lback.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
-// Page Name 1
-
-// Page Name 2
+$maincolor: #28578A;
