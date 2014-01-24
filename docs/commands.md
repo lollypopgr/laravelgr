@@ -1,143 +1,143 @@
-# Artisan Development
+# Ανάπτυξη μιας Artisan εντολής
 
-- [Introduction](#introduction)
-- [Building A Command](#building-a-command)
-- [Registering Commands](#registering-commands)
-- [Calling Other Commands](#calling-other-commands)
+- [Εισαγωγή](#introduction)
+- [Χτίζοντας μια εντολή](#building-a-command)
+- [Καταγράφοντας εντολές σας](#registering-commands)
+- [Καλώντας άλλες εντολές](#calling-other-commands)
 
 <a name="introduction"></a>
-## Introduction
+## Εισαγωγή
 
-In addition to the commands provided with Artisan, you may also build your own custom commands for working with your application. You may store your custom commands in the `app/commands` directory; however, you are free to choose your own storage location as long as your commands can be autoloaded based on your `composer.json` settings.
+Μαζί με τις εντολές που δίνει το Artisan, μπορείτε να φτιάξετε και εσείς τις δικές σας εντολές για να χρησιμοποιήσετε στην εφαρμογή σας. Μπορείτε να αποθηκεύσετε τις δικές σας εντολές μέσα στον φάκελο `app/commands`; Παρόλαυτα, είσαστε ελεύθεροι να επιλέξετε εσείς που θέλετε να αποθηκεύσετε τις εντολές σας μέσα στην εφαρμογή σας, πρέπει όμως να φροντίσετε το αρχείο σας να φορτώνετε αυτόματα μέσα από το `composer.json`.
 
 <a name="building-a-command"></a>
-## Building A Command
+## Χτίζοντας μια εντολή
 
-### Generating The Class
+### Δημιουργώντας την κλάση
 
-To create a new command, you may use the `command:make` Artisan command, which will generate a command stub to help you get started:
+Για να δημιουργήσετε μια νέα εντολή, μπορείτε να χρησιμοποιήσετε την εντολή Artisan `command:make`, η οποία θα δημιουργήσει ένα βασικό πρότυπο της εντολής για να σας βοηθήσει να ξεκινήσετε:
 
-#### Generate A New Command Class
+#### Δημιουργώντας μια νέα κλάση για την εντολή σας
 
 	php artisan command:make FooCommand
 
-By default, generated commands will be stored in the `app/commands` directory; however, you may specify custom path or namespace:
+Από προεπιλογή, οι εντολές που δημιουργούνται αποθηκεύονται στον φάκελο `app/commands`; Παρόλαυτα, μπορείτε να ορίσετε εσείς σε ποιοόν φάκελο θέλετε να τις αποθηκεύσετε ή να χρησιμοποιήσετε namespaces:
 
 	php artisan command:make FooCommand --path=app/classes --namespace=Classes
 
-When creating the command, the `--command` option may be used to assign the terminal command name:
+Όταν δημιουργήσετε την εντολή, η επιλογή `--command` μπορεί να χρησιμοποιηθεί για να ορίσετε ένα όνομα για την εντολή σας:
 
 	php artisan command:make AssignUsers --command=users:assign
 
-If you need to create a command for a [workbench package](/docs/packages), use the `--bench` switch:
+Αν χρειαστεί να δημιουργήσετε μια εντολή για κάποιο πακέτο [workbench package](/docs/packages), χρησιμοποιήστε την επιλογή `--bench`:
 
 	php artisan command:make AssignUsers --bench="vendor/package"
 
-### Writing The Command
+### Γράφοντας την εντολή σας
 
-Once your command is generated, you should fill out the `name` and `description` properties of the class, which will be used when displaying your command on the `list` screen.
+Όταν η εντολή σας έχει δημιουργηθεί, πρέπει να συμπληρώσετε το `name` και το `description` της κλάσης, τα οποία θα χρησιμοποιηθούν όταν βλέπετε την εντολή σας στην οθόνη `list`.
 
-The `fire` method will be called when your command is executed. You may place any command logic in this method.
+Η μέθοδος `fire` θα κληθεί όταν εκτελεστεί η εντολή σας. Μπορείτε να εισάγετε την λογική της μεθόδου σας μέσα σε αυτή την μέθοδο.
 
-### Arguments & Options
+### Ορίσματα & Επιλογές
 
-The `getArguments` and `getOptions` methods are where you may define any arguments or options your command receives. Both of these methods return an array of commands, which are described by a list of array options.
+Οι μέθοδοι `getArguments` και `getOptions` βρίσκονται εκεί όπου μπορείτε να προσδιορίσετε οποιαδήποτε ορίσματα ή επιλογές που λαμβάνει η εντολή σας. Και οι δύο αυτές μέθοδοι επιστρέφουν έναν πίνακα από εντολές, ο οποίος αποτελείται από μια λίστα επιλογών.
 
-When defining `arguments`, the array definition values represent the following:
+Όταν ορίζετε `arguments`, ο πίνακας με τις τιμές ορισμού παρουσιάζεται κάπως έτσι:
 
 	array($name, $mode, $description, $defaultValue)
 
-The argument `mode` may be any of the following: `InputArgument::REQUIRED` or `InputArgument::OPTIONAL`.
+Το όρισμα `mode` μπορεί να πάρει μια τιμή από τα ακόλουθα: `InputArgument::REQUIRED` ή `InputArgument::OPTIONAL`.
 
-When defining `options`, the array definition values represent the following:
+Όταν ορίζετε τα `options`, ο πίνακας με τις τιμές ορισμού παρουσιάζεται κάπως έτσι:
 
 	array($name, $shortcut, $mode, $description, $defaultValue)
 
-For options, the argument `mode` may be: `InputOption::VALUE_REQUIRED`, `InputOption::VALUE_OPTIONAL`, `InputOption::VALUE_IS_ARRAY`, `InputOption::VALUE_NONE`.
+Ως επιλογή, το όρισμα `mode` μπορεί να πάρει τις ακόλουθες τιμές: `InputOption::VALUE_REQUIRED`, `InputOption::VALUE_OPTIONAL`, `InputOption::VALUE_IS_ARRAY`, `InputOption::VALUE_NONE`.
 
-The `VALUE_IS_ARRAY` mode indicates that the switch may be used multiple times when calling the command:
+Η λειτουργία `VALUE_IS_ARRAY` υποδεικνύει ότι η επιλογή --option μπορεί να χρησιμοποιηθεί πολλές φορές όταν καλείτε την εντολή σας:
 
 	php artisan foo --option=bar --option=baz
 
-The `VALUE_NONE` option indicates that the option is simply used as a "switch":
+Η λειτουργία `VALUE_NONE` υποδεικνύει ότι η επιλογή --option χρησιμοποιείται χωρίς παράμετρο:
 
 	php artisan foo --option
 
-### Retrieving Input
+### Ανακτώντας δεδομένα εισόδου
 
-While your command is executing, you will obviously need to access the values for the arguments and options accepted by your application. To do so, you may use the `argument` and `option` methods:
+Καθώς εκτελείται η εντολή σας, θα χρειαστεί να έχετε πρόσβαση σε τιμές ορισμάτων και επιλογών που έχουν εισαχθεί στην εφαρμογή σας. Μπορείτε να το κάνετε αυτό με την χρήση των μεθόδων `argument` και `option`:
 
-#### Retrieving The Value Of A Command Argument
+#### Ανακτώντας την τιμή ενός ορίσματος της εντολής σας
 
 	$value = $this->argument('name');
 
-#### Retrieving All Arguments
+#### Ανακτώντας όλα τα ορίσματα της εντολής σας
 
 	$arguments = $this->argument();
 
-#### Retrieving The Value Of A Command Option
+#### Ανακτώντας την τιμή μιας επιλογής της εντολής σας
 
 	$value = $this->option('name');
 
-#### Retrieving All Options
+#### Ανακτώντας όλες τις επιλογές της εντολής σας
 
 	$options = $this->option();
 
-### Writing Output
+### Γράφοντας δεδομένα εξόδου
 
-To send output to the console, you may use the `info`, `comment`, `question` and `error` methods. Each of these methods will use the appropriate ANSI colors for their purpose.
+Για να δείξετε δεδομένα εξόδου στην κονσόλα, μπορείτε να χρησιμοποιήσετε τις μεθόδους `info`, `comment`, `question` και `error`. Κάθε μια από αυτές τις μεθόδους θα χρησιμοποιήσει τα κατάλληλα χρώματα ANSI για να πετύχει τον δικό της σκοπό.
 
-#### Sending Information To The Console
+#### Στέλνοντας πληροφορίες στην κονσόλα
 
 	$this->info('Display this on the screen');
 
-#### Sending An Error Message To The Console
+#### Στέλνοντας ένα μήνυμα λάθους στην κονσόλα
 
 	$this->error('Something went wrong!');
 
-### Asking Questions
+### Κάνοντας ερωτήσεις
 
-You may also use the `ask` and `confirm` methods to prompt the user for input:
+Μπορείτε επίσης να χρησιμοποιήσετε τις μεθόδους `ask` και `confirm` ώστε να παρακινήσετε τον χρήστη να εισάγωγη κάποια δεδομένα:
 
-#### Asking The User For Input
+#### Ρωτώντας τον χρήστη για δεδομένα εισόδου
 
 	$name = $this->ask('What is your name?');
 
-#### Asking The User For Secret Input
+#### Ρωτώντας τον χρήστη για κρυφά δεδομένα εισόδου
 
 	$password = $this->secret('What is the password?');
 
-#### Asking The User For Confirmation
+#### Ζητώντας επιβεβαίωση από τον χρήστη
 
 	if ($this->confirm('Do you wish to continue? [yes|no]'))
 	{
 		//
 	}
 
-You may also specify a default value to the `confirm` method, which should be `true` or `false`:
+Μπορείτε επίσης να προσδιορίσετε μια προεπιλεγμένη τιμή στην μέθοδο `confirm`, η οποία μπορεί να είναι `true` ή `false`:
 
 	$this->confirm($question, true);
 
 <a name="registering-commands"></a>
-## Registering Commands
+## Καταγράφοντας τις εντολές σας
 
-Once your command is finished, you need to register it with Artisan so it will be available for use. This is typically done in the `app/start/artisan.php` file. Within this file, you may use the `Artisan::add` method to register the command:
+Μόλις φτιάξετε την εντολή σας, πρέπει να την καταγράψετε με το Artisan ώστε να είναι διαθέσιμη για χρήση. Αυτό συνήθως γίνεται μέσα στο αρχείο `app/start/artisan.php`. Για να καταγράψετε την εντολή σας, μπορείτε να χρησιμοποιήσετε την μέθοδο `Artisan::add`:
 
-#### Registering An Artisan Command
+#### Καταγράφοντας την Artisan εντολή σας
 
 	Artisan::add(new CustomCommand);
 
-If your command is registered in the application [IoC container](/docs/ioc), you may use the `Artisan::resolve` method to make it available to Artisan:
+Αν η εντολή σας είναι καταγεγραμμένη μέσα στην εφαρμογή [IoC container](/docs/ioc), μπορείτε να χρησιμοποιήσετε την μέθοδο `Artisan::resolve` ώστε να την κάνετε διαθέσιμη στο Artisan:
 
-#### Registering A Command That Is In The IoC Container
+#### Καταγράφοντας μια εντολή μέσα στην εφαρμογή IoC Container
 
 	Artisan::resolve('binding.name');
 
 <a name="calling-other-commands"></a>
-## Calling Other Commands
+## Καλώντας άλλες εντολές
 
-Sometimes you may wish to call other commands from your command. You may do so using the `call` method:
+Κάποιες φορές μπορεί να θελήσετε να καλέσετε άλλες εντολές μέσα από την δική σας εντολή. Μπορείτε να το κάνετε αυτό με την χρήση της μεθόδου `call`:
 
-#### Calling Another Command
+#### Καλώντας μια άλλη εντολή
 
 	$this->call('command:name', array('argument' => 'foo', '--option' => 'bar'));
