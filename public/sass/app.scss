@@ -61,3 +61,12 @@ body {
   -o-background-size: cover;
   background-size: cover;
 }
+
+// .headertext{
+//     @include grid-column(4);
+// }
+
+.red {
+    background-color: red;
+    color:white;
+}
