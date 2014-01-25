@@ -15,8 +15,9 @@ class PictureFill {
 
 
     /**
-     * Create the boilerplate markup for the
-     * amazing Picture fill project
+     * Create the boilerplate markup for
+     * scottjehl/picturefill
+     *
      * @param  string $image
      * @param  string $altText
      * @param  array $ruleSet
