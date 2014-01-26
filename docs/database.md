@@ -1,25 +1,25 @@
-# Basic Database Usage
+# Βασική Χρήση Βάσεων Δεδομένων
 
-- [Configuration](#configuration)
-- [Read / Write Connections](#read-write-connections)
-- [Running Queries](#running-queries)
-- [Database Transactions](#database-transactions)
-- [Accessing Connections](#accessing-connections)
-- [Query Logging](#query-logging)
+- [Διαμόρφωση](#configuration)
+- [Read / Write Συνδέσεις](#read-write-connections)
+- [Εκτέλεση Queries](#running-queries)
+- [Συνδιαλλαγές Βάσεων Δεδομένων](#database-transactions)
+- [Πρόσβαση σε Συνδέσεις](#accessing-connections)
+- [Καταγραφή των Queries](#query-logging)
 
 <a name="configuration"></a>
-## Configuration
+## Διαμόρφωση
 
-Laravel makes connecting with databases and running queries extremely simple. The database configuration file is `app/config/database.php`. In this file you may define all of your database connections, as well as specify which connection should be used by default. Examples for all of the supported database systems are provided in this file.
+Το Laravel κάνει τη σύνδεση με βάσεις δεδομένων αλλά και την εκτέλεση queries μια εύκολη διαδικασία. Το αρχείο διαμόρφωσης της βάσης δεδομένων είναι το `app/config/database.php`. Σε αυτό το αρχείο μπορείτε να καθορίσετε όλες τις συνδέσεις της βάσης σας, καθώς επίσης και να καθορίσετε ποιά σύνδεση θα είναι η προεπιλεγμένη. Για όλες τις υποστηριζόμενες βάσεις δεδομένων παρέχονται παραδείγματα μέσα σε αυτό το αρχείο.
 
-Currently Laravel supports four database systems: MySQL, Postgres, SQLite, and SQL Server.
+Προς το παρόν το Laravel υποστηρίζει τα παρακάτω συστήματα βάσεων δεδομένων: MySQL, Postgres, SQLite, και SQL Server.
 
 <a name="read-write-connections"></a>
-## Read / Write Connections
+## Read / Write Συνδέσεις
 
-Sometimes you may wish to use one database connection for SELECT statements, and another for INSERT, UPDATE, and DELETE statements. Laravel makes this a breeze, and the proper connections will always be used whether you are using raw queries, the query builder, or the Eloquent ORM.
+Μερικές φορές μπορεί να επιθυμείτε μια σύνδεση βάσης δεδομένων για τη χρήση SELECT queries και κάποια άλλη σύνδεση για τη χρήση INSERT, UPDATE, και DELETE queries. Το Laravel το κάνει αυτό πολύ εύκολα είτε με τη χρήση raw queries, query builder, ή Eloquent ORM.
 
-To see how read / write connections should be configured, let's look at this example:
+Για να καταλάβετε πώς πρέπει να διαμορφωθούν οι read / write συνδέσεις ρίξτε μια ματιά στο ακόλουθο παράδειγμα :
 
 	'mysql' => array(
 		'read' => array(
@@ -37,40 +37,40 @@ To see how read / write connections should be configured, let's look at this exa
 		'prefix'    => '',
 	),
 
-Note that two keys have been added to the configuration array: `read` and `write`. Both of these keys have array values containing a single key: `host`. The rest of the database options for the `read` and `write` connections will be merged from the main `mysql` array. So, we only need to place items in the `read` and `write` arrays if we wish to override the values in the main array. So, in this case, `192.168.1.1` will be used as the "read" connection, while `192.168.1.2` will be used as the "write" connection. The database credentials, prefix, character set, and all other options in the main `mysql` array will be shared across both connections.
+Προσέξτε οτι έχουν προστεθεί δύο κλειδιά στον πίνακα διαμόρφωσης. Το κλειδί `read` και το κλειδί `write`. Και τα δύο κλειδιά έχουν τιμές πίνακα οι οποίες περιέχουν μόνο ένα κλειδί με όνομα `host`. Οι υπόλοιπες επιλογές για τη βάση δεδομένων των συνδέσεων `read` και `write` θα εφαρμοστούν με βάση τον κύριο `mysql` πίνακα. Επομένως το μόνο που χρειάζεται να κάνουμε είναι να προθέτουμε αντικείμενα-επιλογές στους πίνακες `read` και `write` αν θέλουμε να παρακάμψουμε τον κύριο πίνακα `mysql`. Έτσι, σε αυτήν την περίπτωση, η διεύθυνση `192.168.1.1` θα χρησιμοποιηθεί ως "read" σύνδεση, ενώ η διεύθυνση `192.168.1.2` θα χρησιμοποιηθεί ως "write" σύνδεση. Τα στοιχεία πιστοποίησης, το πρόθεμα, ο τύπος χαρακτήρων και όλες οι άλλες επιλογές στον κύριο πίνακα `mysql` θα χρησιμοποιηθούν και από τις δυο συνδέσεις.
 
 <a name="running-queries"></a>
-## Running Queries
+## Εκτέλεση Queries
 
-Once you have configured your database connection, you may run queries using the `DB` class.
+Από τη στιγμή που έχετε διαμορφώσει τη σύνδεση με τη βάση δεδομένων, μπορείτε να εκτελείτε queries χρησιμοποιόντας την κλάση `DB`.
 
-#### Running A Select Query
+#### Εκτέλεση Select Query
 
 	$results = DB::select('select * from users where id = ?', array(1));
 
-The `select` method will always return an `array` of results.
+Η μέθοδος `select` επιστρέφει πάντα έναν πίνακα αποτελεσμάτων.
 
-#### Running An Insert Statement
+#### Εκτέλεση Insert Statement
 
 	DB::insert('insert into users (id, name) values (?, ?)', array(1, 'Dayle'));
 
-#### Running An Update Statement
+#### Εκτέλεση Update Statement
 
 	DB::update('update users set votes = 100 where name = ?', array('John'));
 
-#### Running A Delete Statement
+#### Εκτέλεση Delete Statement
 
 	DB::delete('delete from users');
 
-> **Note:** The `update` and `delete` statements return the number of rows affected by the operation.
+> **Σημείωση:** Τα statements `update` και `delete` επιστρέφουν τον αριθμό των σειρών που επηρεάστηκαν από τη συγκεκριμένη λειτουργία.
 
-#### Running A General Statement
+#### Εκτέλεση Γενικών Statements
 
 	DB::statement('drop table users');
 
-You may listen for query events using the `DB::listen` method:
+Μπορείτε να 'ακούσετε' query γεγονότα χρησιμοποιόντας την `DB::listen` μέθοδο:
 
-#### Listening For Query Events
+#### 'Ακούγοντας' Query Γεγονότα
 
 	DB::listen(function($sql, $bindings, $time)
 	{
@@ -78,9 +78,9 @@ You may listen for query events using the `DB::listen` method:
 	});
 
 <a name="database-transactions"></a>
-## Database Transactions
+## Συνδιαλλαγές Βάσεων Δεδομένων
 
-To run a set of operations within a database transaction, you may use the `transaction` method:
+Για να εκτελέσετε ένα σύνολο λειτουργιών στο εσωτερικό μιας συνδιαλλαγής βάσης δεδομένων μπορείτε να χρησιμοποιήσετε τη μέθοδο `transaction`:
 
 	DB::transaction(function()
 	{
@@ -89,46 +89,46 @@ To run a set of operations within a database transaction, you may use the `trans
 		DB::table('posts')->delete();
 	});
 
-> **Note:** Any exception thrown within the `transaction` closure will cause the transaction to be rolled back automatically.
+> **Σημείωση:** Αν συμβεί οποιαδήποτε εξαίρεση μέσα στo `transaction` closure θα προκαλέσει αυτόματη επαναφορά σε προτέρα κατάσταση.
 
-Sometimes you may need to begin a transaction yourself:
+Κάποιες φορές μπορεί να χρειαστεί να ξεκινήσετε εσείς μια συνδιαλλαγή βάσης δεδομένων:
 
 	DB::beginTransaction();
 
-You can rollback a transaction via the `rollback` method:
+Μπορείτε να επαναφέρετε τη συνδιαλλαγή σε προτέρα κατάσταση μέσω της μεθόδου `rollback` :
 
 	DB::rollback();
 
-Lastly, you can commit a transaction via the `commit` method:
+Τέλος, μπορείτε να πραγματοποιήσετε μια συνδιαλλαγή με τη χρήση της μεθόδου `commit` :
 
 	DB::commit();
 
 <a name="accessing-connections"></a>
-## Accessing Connections
+## Πρόσβαση σε Συνδέσεις
 
-When using multiple connections, you may access them via the `DB::connection` method:
+Όταν χρησιμοποιείτε πολλαπλές συνδέσεις μπορείτε να αποκτήσετε πρόσβαση σε αυτές μέσω της μεθόδου `DB::connection` :
 
 	$users = DB::connection('foo')->select(...);
 
-You may also access the raw, underlying PDO instance:
+Μπορείτε επίσης να αποκτήσετε πρόσβαση στο 'καθαρό', PDO στιγμιότυπο:
 
 	$pdo = DB::connection()->getPdo();
 
-Sometimes you may need to reconnect to a given database:
+Κάποιες φορές μπορεί να επιθυμείτε να κάνετε επανασύνδεση σε κάποια βάση δεδομένων:
 
 	DB::reconnect('foo');
 
-If you need to disconnect from the given database due to exceeding the underyling PDO instance's `max_connections` limit, use the `disconnect` method:
+Αν χρειάζεται να αποσυνδεθείτε από μια βάση δεδομένων εξ' αιτίας της υπέρβασης του ορίου `max_connections` από το PDO στιγμιότυπο, χρησιμοποιήστε τη μέθοδο `disconnect` :
 
 	DB::disconnect('foo');
 
 <a name="query-logging"></a>
-## Query Logging
+## Καταγραφή των Queries
 
-By default, Laravel keeps a log in memory of all queries that have been run for the current request. However, in some cases, such as when inserting a large number of rows, this can cause the application to use excess memory. To disable the log, you may use the `disableQueryLog` method:
+Από προεπιλογή, το Laravel κρατάει ένα αρχείο καταγραφής στη μνήμη για όλα τα queries που έχουν εκτελεστεί απο το τρέχον αίτημα (request) της εφαρμογής σας. Ωστόσο σε μερικές περιπτώσεις, όπως η εισαγωγή πολλών σειρών στη βάση δεδομένων, αυτό μπορεί να προκαλέσει υπέρβαση μνήμης από την εφαρμογή. Για να απενεργοποιήσετε το αρχείο καταγραφής μπορείτε να χρησιμοποιήσετε τη μέθοδο `disableQueryLog` :
 
 	DB::connection()->disableQueryLog();
 
-To get an array of the executed queries, you may use the `getQueryLog` method:
+Για να πάρετε έναν πίνακα από τα queries που έχουν εκτελεστεί, μπορείτε να χρησιμοποιήσετε τη μέθοδο `getQueryLog` :
 
        $queries = DB::getQueryLog();
