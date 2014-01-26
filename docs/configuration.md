@@ -1,38 +1,38 @@
-# Configuration
+# Διαμόρφωση
 
-- [Introduction](#introduction)
-- [Environment Configuration](#environment-configuration)
-- [Maintenance Mode](#maintenance-mode)
+- [Εισαγωγή](#introduction)
+- [Διαμόρφωση περιβάλλοντος](#environment-configuration)
+- [Λειτουργία συντήρησης](#maintenance-mode)
 
 <a name="introduction"></a>
-## Introduction
+## Εισαγωγή
 
-All of the configuration files for the Laravel framework are stored in the `app/config` directory. Each option in every file is documented, so feel free to look through the files and get familiar with the options available to you.
+Όλα τα αρχεία για την διαμόρφωση του Laravel είναι αποθηκευμένα στον φάκελο `app/config`. Κάθε επιλογή σε κάθε αρχείο είναι σχολιασμένη, οπότε μπορείτε να εξοικειωθείτε μαζί τους διαβάζοντάς τες.
 
-Sometimes you may need to access configuration values at run-time. You may do so using the `Config` class:
+Κάποιες φορές μπορεί να θελήσετε να έχετε πρόσβαση σε κάποιες τιμές διαμόρφωσης κατά τον χρόνο εκτέλεσης της εφαρμογής σας. Μπορείτε να το κάνετε αυτό με την χρήση της κλάσης `Config`:
 
-#### Accessing A Configuration Value
+#### Έχοντας πρόσβαση σε μια τιμή διαμόρφωσης
 
 	Config::get('app.timezone');
 
-You may also specify a default value to return if the configuration option does not exist:
+Μπορείτε επίσης να καθορίσετε μια προεπιλεγμένη τιμή για να επιστρέψετε σε περίπτωση που η συγκεκριμένη επιλογή διαμόρφωσης δεν υπάρχει:
 
 	$timezone = Config::get('app.timezone', 'UTC');
 
-Notice that "dot" style syntax may be used to access values in the various files. You may also set configuration values at run-time:
+Να σημειωθέι ότι ο τρόπος σύνταξης με χρήση "dot" μπορεί να χρησιμοποιηθεί για να έχετε πρόσβαση σε τιμές διαφόρων αρχείων. Μπορείτε επίσης να ορίσετε τιμές διαμόρφωσης κατά τον χρόνο εκτέλεσης της εφαρμογής σας:
 
-#### Setting A Configuration Value
+#### Ορίζοντας μια τιμή διαμόρφωσης
 
 	Config::set('database.default', 'sqlite');
 
-Configuration values that are set at run-time are only set for the current request, and will not be carried over to subsequent requests.
+Οι τιμές διαμόρφωσης που ορίζονται κατά τον χρόνο εκτέλεσης της εφαρμογής, χρησιμοποιούνται μόνο για το τρέχον αίτημα, και δεν μπορούν να χρησιμοποιηθούν από επιπλέον αιτήματα.
 
 <a name="environment-configuration"></a>
-## Environment Configuration
+## Περιβάλλον διαμόρφωσης
 
-It is often helpful to have different configuration values based on the environment the application is running in. For example, you may wish to use a different cache driver on your local development machine than on the production server. It is easy to accomplish this using environment based configuration.
+Συχνά βοηθάει να υπάρχουν διαφορετικές τιμές διαμόρφωσης βασιζόμενες στο περιβάλλον το οποίο "τρέχει" η εφαρμογή μας. Για παράδειγμα, μπορεί να θέλετε να χρησιμοποιήσετε διαφορέτικό οδηγό μνήμης cache στο τοπικό σας μηχάνημα απ'ότι στον εξυπηρετητή παραγωγής (production server). Μπορείτε να το κάνετε αυτό με την χρήση της διαμόρφωσης περιβάλλοντος.
 
-Simply create a folder within the `config` directory that matches your environment name, such as `local`. Next, create the configuration files you wish to override and specify the options for that environment. For example, to override the cache driver for the local environment, you would create a `cache.php` file in `app/config/local` with the following content:
+Απλά δημιουργήστε έναν φάκελο μέσα στην τοποθεσία `config` με το όνομα περιβάλλοντος που θέλετε, όπως για παράδειγμα `local`.  Στην συνέχεια, δημιουργήστε τα αρχεία διαμόρφωσης που θέλετε και ορίστε τις επιλογές σας για αυτό το περιβάλλον. Για παράδειγμα, αν θέλετε να παρακάμψετε τον οδηγό μνήμης cache για το περιβάλλον local, θα χρειαστεί να δημιουργήσετε ένα αρχείο με όνομα `cache.php` μέσα στον φάκελο `app/config/local` με το ακόλουθο περιεχόμενο:
 
 	<?php
 
@@ -42,11 +42,11 @@ Simply create a folder within the `config` directory that matches your environme
 
 	);
 
-> **Note:** Do not use 'testing' as an environment name. This is reserved for unit testing.
+> **Σημείωση:** Μην χρησιμοποιείτε σαν όνομα περιβάλλοντος το όνομα 'testing'. Το όνομα αυτό χρησιμοποιείται για unit testing.
 
-Notice that you do not have to specify _every_ option that is in the base configuration file, but only the options you wish to override. The environment configuration files will "cascade" over the base files.
+Να σημειωθεί ότι δεν είναι απαραίτητο να ορίσετε όλες τις επιλογές που βρίσκονται στο βασικό αρχείο διαμόρφωσης, αλλά μόνο αυτές που θέλετε να αλλάξετε. Τα αρχεία διαμόρφωσης περιβάλλοντος θα παρακάμψουν τα βασικά αρχεία διαμόρφωσης.
 
-Next, we need to instruct the framework how to determine which environment it is running in. The default environment is always `production`. However, you may setup other environments within the `bootstrap/start.php` file at the root of your installation. In this file you will find an `$app->detectEnvironment` call. The array passed to this method is used to determine the current environment. You may add other environments and machine names to the array as needed.
+Στην συνέχεια, πρέπει να καθοδηγήσουμε το framework ώστε να καθορίσει ποιό περιβάλλον χρησιμοποιεί. Το προεπιλεγμένο περιβάλλον είναι πάντα το `production`. Παρόλαυτα, μπορείτε να ορίσετε διαφορετικό περιβάλλον μέσα στο αρχείο `bootstrap/start.php`. Μέσα σε αυτό το αρχείο θα βρείτε μια κλήση της μεθόδου `$app->detectEnvironment`. Ο πίνακας που δίνεται ως παράμετρος σε αυτή την μέθοδο χρησιμοποιείται για να καθοριστεί το τρέχον περιβάλλον. Μπορείτε να εισάγετε διαφορετικά περιβάλλοντα και ονόματα μηχανημάτων στον πίνακα αυτό.
 
     <?php
 
@@ -56,55 +56,55 @@ Next, we need to instruct the framework how to determine which environment it is
 
     ));
 
-In this example, 'local' is the name of the environment and 'your-machine-name' is the hostname of your server. On Linux and Mac, you may determine your hostname using the `hostname` terminal command.
+Σε αυτό το παράδειγμα, το όνομα περιβάλλοντος είναι 'local' και το όνομα του μηχανήματος εξυπηρετητή είναι 'your-machine-name'. Σε περιβάλλοντα Linux και Mac, μπορείτε να ορίσετε το όνομα του μηχανήματός σας με την χρήση της εντολής τερματικού `hostname`.
 
-If you need more flexible environment detection, you may pass a `Closure` to the `detectEnvironment` method, allowing you to implement environment detection however you wish:
+Αν χρειάζεστε ένα πιο ευέλικτο τρόπο ανίχνευσης περιβάλλοντος, μπορείτε να το κάνετε με την χρήση `Closure` στην μέθοδο `detectEnvironment`, επιτρέποντας σας έτσι να ανιχνέυσετε ένα περιβάλλον με τον τρόπο που εσείς επιθυμείτε:
 
 	$env = $app->detectEnvironment(function()
 	{
 		return $_SERVER['MY_LARAVEL_ENV'];
 	});
 
-You may access the current application environment via the `environment` method:
+Μπορείτε να έχετε πρόσβαση στο τρέχον περιβάλλον της εφαρμογής σας με την χρήση της μεθόδου `environment`:
 
-#### Accessing The Current Application Environment
+#### Έχοντας πρόσβαση στο τρέχον περιβάλλον της εφαρμογής σας
 
 	$environment = App::environment();
 
-You may also pass arguments to the `environment` method to check if the environment matches a given value:
+Μπορείτε επίσης να ορίσετε μεταβλητές μέσα στην μέθοδο `environment` ώστε να ελέγξετε αν το περιβάλλον σας ταιρίαζει με την δοσμένη τιμή:
 
 	if (App::environment('local'))
 	{
-		// The environment is local
+		// Το περιβάλλον έχει το όνομα 'local'
 	}
 
 	if (App::environment('local', 'staging'))
 	{
-		// The environment is either local OR staging...
+		// Το περιβάλλον είτε έχει το όνομα 'local', είτε το όνομα 'staging'...
 	}
 
 <a name="maintenance-mode"></a>
-## Maintenance Mode
+## Λειτουργία συντήρησης
 
-When your application is in maintenance mode, a custom view will be displayed for all routes into your application. This makes it easy to "disable" your application while it is updating or when you are performing maintenance. A call to the `App::down` method is already present in your `app/start/global.php` file. The response from this method will be sent to users when your application is in maintenance mode.
+Όταν η εφαρμογή σας βρίσκεται σε λειτουργία συντήρησης, θα προβάλλεται μια συγκεκριμένη οθόνη για όλα τα routes της εφαρμογής σας. Με αυτό τον τρόπο μπορείτε να κάνετε "disable" την εφαρμογή σας ενώ αυτή αναβαθμίζεται ή συντηρείται. Ένα παράδειγμα κλήσης της μεθόδου `App::down` υπάρχει ήδη μέσα στο αρχείο `app/start/global.php`. Η απάντηση αυτής της μεθόδου θα σταλεί στους χρήστες όταν η εφαρμογή σας βρίσκεται σε λειτουργία συντήρησης.
 
-To enable maintenance mode, simply execute the `down` Artisan command:
+Για να ενεργοποιήσετε την λειτουργία συντήρησης, απλά εκτελέστε την εντολή Artisan `down`:
 
 	php artisan down
 
-To disable maintenance mode, use the `up` command:
+Για να απενεργοποιήσετε την λειτουργία συντήρησης, χρησιμοποιείστε την εντολή `up`:
 
 	php artisan up
 
-To show a custom view when your application is in maintenance mode, you may add something like the following to your application's `app/start/global.php` file:
+Για να προβάλλετε μια συγκεκριμένη οθόνη την στιγμή που η εφαρμογή σας είναι σε λειτουργία συντήρησης, μπορείτε να προσθέσετε κάτι παρόμοιο με το παρακάτω, στο αρχείο `app/start/global.php` της εφαρμογής σας:
 
 	App::down(function()
 	{
 		return Response::view('maintenance', array(), 503);
 	});
 
-If the Closure passed to the `down` method returns `NULL`, maintenace mode will be ignored for that request.
+Εάν το Closure που χρησιμοποιήθηκε στην μέθοδο `down` επιστρέψει την τιμή `NULL`, η λειτουργία συντήρησης θα αγνοηθεί.
 
-### Maintenance Mode & Queues
+### Λειτουργία συντήρησης και ουρές
 
-While your application is in maintenance mode, no [queue jobs](/docs/queues) will be handled. The jobs will continue to be handled as normal once the application is out of maintenance mode.
+Όσο η εφαρμογή σας βρίσκεται σε λειτουργία συντήρησης, καμία δουλειά ουράς [queue jobs](/docs/queues) δεν θα μπορεί να εξυπηρετηθεί. Οι δουλείες θα συνεχίσουν να εξυπηρετούνται όπως και πριν, όταν η εφαρμογή σας σταματήσει να βρίσκεται σε λειτουργία συντήρησης.
