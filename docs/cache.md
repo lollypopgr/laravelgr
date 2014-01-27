@@ -1,132 +1,132 @@
-# Cache
+# Μνήμη Cache
 
-- [Configuration](#configuration)
-- [Cache Usage](#cache-usage)
-- [Increments & Decrements](#increments-and-decrements)
-- [Cache Tags](#cache-tags)
-- [Database Cache](#database-cache)
+- [Διαμόρφωση](#configuration)
+- [Χρήση μνήμης Cache](#cache-usage)
+- [Αυξήσεις & Μειώσεις](#increments-and-decrements)
+- [Ετικέτες μνήμης Cache](#cache-tags)
+- [Βάση δεδομένων μνήμης Cache](#database-cache)
 
 <a name="configuration"></a>
-## Configuration
+## Διαμόρφωση
 
-Laravel provides a unified API for various caching systems. The cache configuration is located at `app/config/cache.php`. In this file you may specify which cache driver you would like used by default throughout your application. Laravel supports popular caching backends like [Memcached](http://memcached.org) and [Redis](http://redis.io) out of the box.
+Το Laravel παρέχει ένα ενοποιημένο API (διεπαφή προγραμματισμού εφαρμογών) για διάφορα συστήματα που κάνουν χρήση της μνήμης cache. Για να διαμορφώσετε τις επιλογές της μνήμης cache, πηγαίνετε στο αρχείο `app/config/cache.php`. Σε αυτό το αρχείο μπορείτε να καθορίσετε τον οδηγό της μνήμης cache που θέλετε να χρησιμοποιηθεί ως προεπιλογή για την εφαρμογή σας. Το Laravel υποστηρίζει δημοφιλείς συστήματα μνήμης cache όπως το [Memcached](http://memcached.org) και το [Redis](http://redis.io) από την αρχή της εγκατάστασής του.
 
-The cache configuration file also contains various other options, which are documented within the file, so make sure to read over these options. By default, Laravel is configured to use the `file` cache driver, which stores the serialized, cached objects in the filesystem. For larger applications, it is recommended that you use an in-memory cache such as Memcached or APC.
+Το αρχείο διαμόρφωσης επιλογών της μνήμης cache περιλαμβάνει επίσης διάφορες άλλες παραμετροποιήσιμες επιλογές, οπότε βεβαιωθείτε ότι διαβάσατε τον σχολιασμό τους για να τις κατανοήσετε. Από προεπιλογή, το Laravel είναι διαμορφωμένο να χρησιμοποιεί την επιλογή `αρχείο` (`file`) ως οδηγό μνήμης cache, το οποίο αποθηκεύει τα αντικείμενα της μνήμης cache στο σύστημα αρχείων. Για μεγαλύτερες εφαρμογές, προτείνεται η χρήση in-memory μνήμης cache όπως για παράδειγμα Memcached ή APC.
 
 <a name="cache-usage"></a>
-## Cache Usage
+## Χρήση μνήμης Cache
 
-#### Storing An Item In The Cache
+#### Αποθηκεύοντας ένα αντικείμενο μέσα στην μνήμη Cache
 
 	Cache::put('key', 'value', $minutes);
 
-#### Using Carbon Objects To Set Expire Time
+#### Χρησιμοποιώντας αντικείμενα Carbon για τον ορισμό του χρόνου λήξης
 
 	$expiresAt = Carbon::now()->addMinutes(10);
 
 	Cache::put('key', 'value', $expiresAt);
 
-#### Storing An Item In The Cache If It Doesn't Exist
+#### Αποθηκεύοντας ένα αντικείμενο μέσα στην μνήμη Cache αν αυτό δεν υπάρχει ήδη
 
 	Cache::add('key', 'value', $minutes);
 
-The `add` method will return `true` if the item is actually **added** to the cache. Otherwise, the method will return `false`.
+Η μέθοδος `προσθήκη` (`add`) θα επιστρέψει `αληθές` (`true`) εάν το στοιχείο πράγματι **προστέθηκε** στην μνήμη cache. Σε αντίθετη περίπτωση, η μέθοδος θα επιστρέψει `ψευδής` (`false`).
 
-#### Checking For Existence In Cache
+#### Ελέγχοντας για ύπαρξη στοιχείου μέσα στην μνήμη Cache
 
 	if (Cache::has('key'))
 	{
 		//
 	}
 
-#### Retrieving An Item From The Cache
+#### Ανάκτηση ενός στοιχείου από την μνήμη Cache
 
 	$value = Cache::get('key');
 
-#### Retrieving An Item Or Returning A Default Value
+#### Ανάκτηση ενός στοιχείου ή επιστροφή μιας προεπιλεγμένης τιμής
 
 	$value = Cache::get('key', 'default');
 
 	$value = Cache::get('key', function() { return 'default'; });
 
-#### Storing An Item In The Cache Permanently
+#### Αποθηκεύοντας ένα αντικείμενο μέσα στην μνήμη Cache μόνιμα
 
 	Cache::forever('key', 'value');
 
-Sometimes you may wish to retrieve an item from the cache, but also store a default value if the requested item doesn't exist. You may do this using the `Cache::remember` method:
+Μερικές φορές μπορεί να εύχεστε να ανακτήσετε ένα στοιχείο από την μνήμη cache, αλλά να αποθηκεύσετε και μία προεπιλεγμένη τιμή αν η ζητούμενη τιμή δεν υπάρχει ήδη. Μπορείτε να το κάνετε αυτό με την χρήση της μεθόδου `Cache::remember`:
 
 	$value = Cache::remember('users', $minutes, function()
 	{
 		return DB::table('users')->get();
 	});
 
-You may also combine the `remember` and `forever` methods:
+Μπορείτε επίσης να συνδυάσετε τις μεθόδους `remember` και `forever`:
 
 	$value = Cache::rememberForever('users', function()
 	{
 		return DB::table('users')->get();
 	});
 
-Note that all items stored in the cache are serialized, so you are free to store any type of data.
+Σημειώστε ότι όλα τα στοιχεία που αποθηκεύονται στην μνήμη cache γίνονται serialized, και έτσι είσαστε ελεύθεροι να αποθηκεύσετε οποιοδήποτε τύπο δεδομένων εσείς επιλέξετε.
 
-#### Removing An Item From The Cache
+#### Αφαιρώντας ένα στοιχείο από την μνήμη Cache
 
 	Cache::forget('key');
 
 <a name="increments-and-decrements"></a>
-## Increments & Decrements
+## Αυξήσεις & Μειώσεις
 
-All drivers except `file` and `database` support the `increment` and `decrement` operations:
+Όλοι οι οδηγοί εκτός από τους οδηγούς `αρχείο` και `βάση δεδομένων` (`file` and `database`) υποστηρίζουν τις λειτουργίες `αύξησης` και `μείωσης` (`increment` and `decrement`):
 
-#### Incrementing A Value
+#### Αυξάνοντας μια τιμή
 
 	Cache::increment('key');
 
 	Cache::increment('key', $amount);
 
-#### Decrementing A Value
+#### Μειώνοντας μια τιμή
 
 	Cache::decrement('key');
 
 	Cache::decrement('key', $amount);
 
 <a name="cache-tags"></a>
-## Cache Tags
+## Ετικέτες μνήμης Cache
 
-> **Note:** Cache tags are not supported when using the `file` or `database` cache drivers. Furthermore, when using multiple tags with caches that are stored "forever", performance will be best with a driver such as `memcached`, which automatically purges stale records.
+> **Σημείωση:** Οι ετικέτες μνήμης Cache δεν υποστηρίζονται όταν γίνεται χρήση των οδηγών μνήμης cache `αρχείο` και `βάση δεδομένων` (`file` or `database`). Επιπλέον, όταν γίνεται χρήση πολλαπλών ετικετών που αποθηκεύονται "για πάντα" ("forever"), η απόδοση θα είναι καλύτερη με την χρήση ενός οδηγού μνήμης cache όπως για παράδειγμα `memcached`, ο οποίος κάνει αυτόματη εκκαθάριση στις παλαιές εγγραφές της μνήμης.
 
-Cache tags allow you to tag related items in the cache, and then flush all caches tagged with a given name. To access a tagged cache, use the `tags` method:
+Οι ετικέτες της μνήμης Cache σας επιτρέπουν να επισημάνετε σχετικά στοιχεία μέσα στην μνήμη, και έπειτα να απαλείψετε όλη την μνήμη cache που έχει επισημανθεί με ένα συγκεκριμένο όνομα. Για να έχετε πρόσβαση σε μια επισυνημμένη με ετικέτα μνήμη cache, χρησιμοποιείστε την μέθοδο `ετικέτες` (`tags`):
 
-#### Accessing A Tagged Cache
+#### Έχοντας πρόσβαση σε επισυνημμένη με ετικέτα μνήμη Cache
 
-You may store a tagged cache by passing in an ordered list of tag names as arguments, or as an ordered array of tag names.
+Μπορείτε να αποθηκεύσετε μια επισυνημμένη με ετικέτα μνήμη cache απλά περνώντας σε μια διατεταγμένη λίστα ονόματα ετικετών ως παραμέτρους, ή ως έναν διατεταγμένο πίνακα αποτελούμενο από ονόματα ετικετών.
 
 	Cache::tags('people', 'authors')->put('John', $john, $minutes);
 
 	Cache::tags(array('people', 'artists'))->put('Anne', $anne, $minutes);
 
-You may use any cache storage method in combination with tags, including `remember`, `forever`, and `rememberForever`. You may also access cached items from the tagged cache, as well as use the other cache methods such as `increment` and `decrement`:
+Μπορείτε να χρησιμοποιήσετε οποιαδήποτε μέθοδο αποθήκευσης μνήμης cache σε συνδυασμό με ετικέτες, συμπεριλαμβανομένου των μεθόδων `θυμάμαι`, `για πάντα`, και `θυμάμαι για πάντα` (`remember`, `forever`, and `rememberForever`). Μπορείτε επίσης να έχετε πρόσβαση σε στοιχεία από την επισυνημμένη μνήμη cache, όπως επίσης και να χρησιμοποιήσετε τις άλλες μεθόδους της μνήμης cache όπως για παράδειγμα τις μεθόδους `αύξηση` και `μείωση` (`increment` and `decrement`):
 
-#### Accessing Items In A Tagged Cache
+#### Έχοντας πρόσβαση σε στοιχεία μιας επισυνημμένης με ετικέτα μνήμης Cache
 
-To access a tagged cache, pass the same ordered list of tags used to save it.
+Για να έχετε πρόσβαση σε μια επισυνημμένη με ετικέτα μνήμη cache, περάστε ως παράμετρο την ίδια διατεταγμένη λίστα από ετικέτες που χρησιμοποιήσατε για να την αποθηκεύσετε.
 
 	$anne = Cache::tags('people', 'artists')->get('Anne');
 
 	$john = Cache::tags(array('people', 'authors'))->get('John');
 
-You may flush all items tagged with a name or list of names. For example, this statement would remove all caches tagged with either `people`, `authors`, or both. So, both "Anne" and "John" would be removed from the cache:
+Μπορείτε να διαγράψετε όλα τα επισυνημμένα με ετικέτα στοιχεία που αποτελούνται από ένα όνομα ή μια λίστα από ονόματα. Για παράδειγμα, αυτή η δήλωση θα αφαιρέσει όλα τα αποθηκευμένα στοιχεία της μνήμης cache που έχουν επισυναφθεί με μια από τις ετικέτες `people`, `authors`, ή και με τις δύο. Έτσι, αμφότεροι οι "Anne" και ο "John" θα αφαιρεθούν από την μνήμη cache:
 
 	Cache::tags('people', 'authors')->flush();
 
-In contrast, this statement would remove only caches tagged with `authors`, so "John" would be removed, but not "Anne".
+Σε αντίθεση, αυτή η δήλωση θα αφαιρέσει μόνο τις επισυνημμένες με ετικέτα μνήμες cache που κάνουν χρήση της ετικέτας `authors`, άρα ο "John" θα αφαιρεθεί, αλλά η "Anne" όχι.
 
 	Cache::tags('authors')->flush();
 
 <a name="database-cache"></a>
-## Database Cache
+## Βάση δεδομένων μνήμης Cache
 
-When using the `database` cache driver, you will need to setup a table to contain the cache items. You'll find an example `Schema` declaration for the table below:
+Όταν χρησιμοποιείτε τον οδηγό μνήμης cache `βάση δεδομένων`, θα χρειαστεί να φτιάξετε ένα πίνακα για να περιέχει όλα τα στοιχεία της μνήμης αυτής. Θα βρείτε ένα παράδειγμα με την ονομασία `Schema` για τον πίνακα αυτό παρακάτω:
 
 	Schema::create('cache', function($table)
 	{
