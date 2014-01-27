@@ -17,4 +17,4 @@ Feel free to do what ever you want. Its a base for the Greek fan page.
 
 ## Laravel.gr Docs
 
-If you want to translate the docs in Greek Language start translating the /docs folder.
+If you want to translate the docs in Greek Language start translating the /docs folder. Merge Request to "Docs" branch please.
