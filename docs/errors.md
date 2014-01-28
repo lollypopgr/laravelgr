@@ -1,36 +1,36 @@
-# Errors & Logging
+# Σφάλαματα και Καταγραφή
 
-- [Error Detail](#error-detail)
-- [Handling Errors](#handling-errors)
-- [HTTP Exceptions](#http-exceptions)
-- [Handling 404 Errors](#handling-404-errors)
-- [Logging](#logging)
+- [Περιγραφή Σφάλματος](#error-detail)
+- [Χειρισμός Σφαλμάτων](#handling-errors)
+- [Εξεραίσεις HTTP](#http-exceptions)
+- [Χειρισμός Σφαλμάτων 404](#handling-404-errors)
+- [Καταγραφή](#logging)
 
 <a name="error-detail"></a>
-## Error Detail
+## Περιγραφή Σφάλματος
 
-By default, error detail is enabled for your application. This means that when an error occurs you will be shown an error page with a detailed stack trace and error message. You may turn off error details by setting the `debug` option in your `app/config/app.php` file to `false`.
+Από προεπιλογή, η περιγραφή σφαλμάτων είναι ενεργοποιημένη για την εφαρμογή σας. Αυτό σημαίνει οτι όταν συμβαίνει ένα σφάλμα, θα σας εμφανιστεί στην οθόνη σας μια σελίδα σφάλματος με μια λεπτομερή περιγραφή των βημάτων κατά την εκτέλεση και ένα μήνυμα σφάλματος. Μπορείτε να απενεργοποιήσετε την περιγραφή σφαλμάτων θέτοντας την επιλογή `debug` στο αρχείο `app/config/app.php` στην τιμή `false`.
 
-> **Note:** It is strongly recommended that you turn off error detail in a production environment.
+> **Σημείωση:** Συνιστάται να απενεργοποιείτε την περιγραφή σφαλμάτων σε περιβάλον παραγωγής.
 
 <a name="handling-errors"></a>
-## Handling Errors
+## Χειρισμός Σφαλμάτων
 
-By default, the `app/start/global.php` file contains an error handler for all exceptions:
+Από προεπιλογή, το αρχείο `app/start/global.php` περιέχει έναν χειριστή σφαλμάτων για κάθε είδους εξαίρεση :
 
 	App::error(function(Exception $exception)
 	{
 		Log::error($exception);
 	});
 
-This is the most basic error handler. However, you may specify more handlers if needed. Handlers are called based on the type-hint of the Exception they handle. For example, you may create a handler that only handles `RuntimeException` instances:
+Αυτός είναι ο πιο βασικός χειριστής σφαλμάτων. Ωστόσο, μπορείτε να καθορίσετε επιπλέον χειριστές αν χρειαστεί. Οι χειριστές καλούνται με βάση τον τύπο της εξέραισης την οποία χειρίζονται. Για παράδειγμα, μπορείτε να δημιουργήσετε έναν χειριστή ο οποίος χειρίζεται μόνο `RuntimeException` στιγμιότυπα:
 
 	App::error(function(RuntimeException $exception)
 	{
 		// Handle the exception...
 	});
 
-If an exception handler returns a response, that response will be sent to the browser and no other error handlers will be called:
+Αν ένας χειριστής σφαλμάτων επιστρέψει μια απόκριση, αυτή θα σταλεί στο φιλομετρητή και δε θα κληθούν άλλοι χειριστές σφαλμάτων: 
 
 	App::error(function(InvalidUserException $exception)
 	{
@@ -39,36 +39,36 @@ If an exception handler returns a response, that response will be sent to the br
 		return 'Sorry! Something is wrong with this account!';
 	});
 
-To listen for PHP fatal errors, you may use the `App::fatal` method:
+Για να 'ακούσετε' μοιραία(fatal) PHP σφάλματα, μπορείτε να χρησιμοποιήσετε τη μέθοδο `App::fatal`:
 
 	App::fatal(function($exception)
 	{
 		//
 	});
 
-If you have several exception handlers, they should be defined from most generic to most specific. So, for example, a handler that handles all exceptions of type `Exception` should be defined before a custom exception type such as `Illuminate\Encryption\DecryptException`.
+Αν έχετε διάφορους χειριστές σφαλμάτων, αυτοί θα πρέπει να οριστούν από τον πιο γενικό προς στον πιο ειδικό. Έτσι, για παράδειγμα, ένας χειριστής σφαλμάτων που χειρίζεται εξαιρέσεις τύπου `Exception` θα πρέπει να δηλωθεί πριν από έναν προσαρμοσμένο τύπο εξαίρεσης όπως ο `Illuminate\Encryption\DecryptException`.
 
-### Where To Place Error Handlers
+### Που να τοποθετήσετε τους Χειριστές Σφαλμάτων
 
-There is no default "home" for error handler registrations. Laravel offers you freedom in this area. One option is to define the handlers in your `start/global.php` file. In general, this is a convenient location to place any "bootstrapping" code. If that file is getting crowded, you could create an `app/errors.php` file, and `require` that file from your `start/global.php` script. A third option is to create a [service provider](/docs/ioc#service-providers) that registers the handlers. Again, there is no single "correct" answer. Choose a location that you are comfortable with.
+Δεν υπάρχει το σωστό "home" για την εγγραφή χειριστών σφαλμάτων. Το Laravel προσφέρει ελευθερία σε αυτόν τον τομέα. Μια επιλογή είναι να ορίσετε χειριστές στο αρχείο `start/global.php`. Γενικά, είναι μια βολική τοποθεσία για να τοποθετήσετε οποιοδήποτε κώδικα "εκκίνησης". Αν αυτό το αρχείο αρχίσει να γίνεται μεγάλο, μπορείτε να δημιουργήσετε ένα αρχείο `app/errors.php`, και να περιλάβετε (`require`) αυτό το αρχείο απο το `start/global.php` αρχείο.Μια τρίτη επιλογή είνα να δημιουργήσετε έναν πάροχο υπηρεσιών [service provider](/docs/ioc#service-providers) ο οποίος θα είναι υπεύθυνος για την εγγραφή των χειριστών σφαλμάτων. Δεν υπάρχει μόνο μια  "σωστή" λύση. Επιλέξτε μια τοποθεσία με την οποία είστε πιο εξοικειωμένοι.
 
 <a name="http-exceptions"></a>
-## HTTP Exceptions
+## Εξαιρέσεις HTTP 
 
-Some exceptions describe HTTP error codes from the server. For example, this may be a "page not found" error (404), an "unauthorized error" (401) or even a developer generated 500 error. In order to return such a response, use the following:
+Κάποιες εξαιρέσεις περιγράφουν HTTP σφάλματα που προέρχονται από το server. Για παράδειγμα, αυτό θα μπορούσε να είναι ένα "page not found" σφάλμα (404), ένα "unauthorized" σφάλμα (401)  ή ακόμα ένα σφάλμα που προκλήθηκε από τον προγραμματιστή 500. Προκειμένου να επιστρέψετε μια τέτοια τέτοια απόκριση χρησιμοποιήστε το παρακάτω:
 
 	App::abort(404);
 
-Optionally, you may provide a response:
+Προαιρετικά θα μπορούσατε να παρέχετε και μια απόκριση:
 
 	App::abort(403, 'Unauthorized action.');
 
-This method may be used at any time during the request's lifecycle.
+Αυτή η μέθοδος μπορεί να χρησιμοποιηθεί σε οποιαδήποτε στιγμή κατα τη διάρκεια του κυκλου ζωής του HTTP αιτήματος.
 
 <a name="handling-404-errors"></a>
-## Handling 404 Errors
+## Χειρισμός Σφαλμάτων 404
 
-You may register an error handler that handles all "404 Not Found" errors in your application, allowing you to easily return custom 404 error pages:
+Μπορείτε να εγγράψετε έναν χειριστή σφαλμάτων οοποίος χειρίζεται όλα τα "404 Not Found" σφάλματα της εφαρμογής σας, επιτρέποντας σας να επιστρέφετε εύκολα προσαρμοσμένες σελίδες 404 σφαλμάτων:
 
 	App::missing(function($exception)
 	{
@@ -76,9 +76,9 @@ You may register an error handler that handles all "404 Not Found" errors in you
 	});
 
 <a name="logging"></a>
-## Logging
+## Καταγραφή
 
-The Laravel logging facilities provide a simple layer on top of the powerful [Monolog](http://github.com/seldaek/monolog) library. By default, Laravel is configured to create a single log file for your application, and this file is stored in `app/storage/laravel.log`. You may write information to the log like so:
+Οι διευκολυνσεις καταγρφής του Laravel παρέχουν ένα απλό επίπεδο στην κορυφή της πανίσχυρης βιβλιοθήκης [Monolog](http://github.com/seldaek/monolog). Από προεπιλογή, το Laravel είναι διαμορφωμένο να δημιουργεί ένα απλό αρχείο καταγραφής για την εφαρμογή σας, το οποίο είναι αποθηκευμένο στο `app/storage/laravel.log`. Μπορείτε να γράψετε πληροφορίες στο αρχείο καταγραφής όπως παρακάτω:
 
 	Log::info('This is some useful information.');
 
@@ -86,19 +86,19 @@ The Laravel logging facilities provide a simple layer on top of the powerful [Mo
 
 	Log::error('Something is really going wrong.');
 
-The logger provides the seven logging levels defined in [RFC 5424](http://tools.ietf.org/html/rfc5424): **debug**, **info**, **notice**, **warning**, **error**, **critical**, and **alert**.
+Το καταγραφικό παρέχει τα 7 επίπεδα καταγραφής που ορίζονται στο [RFC 5424](http://tools.ietf.org/html/rfc5424): **debug**, **info**, **notice**, **warning**, **error**, **critical**, και **alert**.
 
-An array of contextual data may also be passed to the log methods:
+Επίσης ένας πίνακας συναφών πληροφοριών μπορεί να περαστεί σαν όρισμα στις μεθόδους καταγραφής:
 
 	Log::info('Log message', array('context' => 'Other helpful information'));
 
-Monolog has a variety of additional handlers you may use for logging. If needed, you may access the underlying Monolog instance being used by Laravel:
+Η Monolog, έχει μια πληθώρα επιπρόσθετων χειριστών που μπορεί να χρειαστείτε για τη διαδικασία καταγραφής. Αν χρειαστεί μπορείτε να χρησιμοποιήσετε το στιγμιότυπο Monolog το οποίο χρησιμοποιείται από το Laravel:
 
 	$monolog = Log::getMonolog();
 
-You may also register an event to catch all messages passed to the log:
+Μπορείτε επίσης να γράψετε ένα γεγονός(event) ώστε να αλλιεύετε όλα τα μηνύματα που περνάνε στο αρχείο καταγραφής:
 
-#### Registering A Log Listener
+#### Δημιουργώντας έναν 'ακροατή' καταγραφών
 
 	Log::listen(function($level, $message, $context)
 	{
