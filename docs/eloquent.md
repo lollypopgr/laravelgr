@@ -1,42 +1,42 @@
 # Eloquent ORM
 
-- [Introduction](#introduction)
-- [Basic Usage](#basic-usage)
-- [Mass Assignment](#mass-assignment)
+- [Εισαγωγή](#introduction)
+- [Βασική χρήση](#basic-usage)
+- [Μαζική εκχώρηση στοιχείων](#mass-assignment)
 - [Insert, Update, Delete](#insert-update-delete)
 - [Soft Deleting](#soft-deleting)
 - [Timestamps](#timestamps)
 - [Query Scopes](#query-scopes)
-- [Relationships](#relationships)
+- [Συσχετίσεις](#relationships)
 - [Querying Relations](#querying-relations)
-- [Eager Loading](#eager-loading)
-- [Inserting Related Models](#inserting-related-models)
-- [Touching Parent Timestamps](#touching-parent-timestamps)
-- [Working With Pivot Tables](#working-with-pivot-tables)
-- [Collections](#collections)
+- [Προθυμοποίηση φόρτωσης](#eager-loading)
+- [Εισάγοντας σχετικά μοντέλα](#inserting-related-models)
+- [Αναβαθμίζοντας τα Parent Timestamps](#touching-parent-timestamps)
+- [Δουλεύοντας με Pivot Tables](#working-with-pivot-tables)
+- [Συλλογές](#collections)
 - [Accessors & Mutators](#accessors-and-mutators)
-- [Date Mutators](#date-mutators)
-- [Model Events](#model-events)
-- [Model Observers](#model-observers)
-- [Converting To Arrays / JSON](#converting-to-arrays-or-json)
+- [Mutators ημερομηνίας](#date-mutators)
+- [Μοντέλο συμβάντος](#model-events)
+- [Μοντέλο παρατηρητής](#model-observers)
+- [Μετατρέποντας σε πίνακες / JSON](#converting-to-arrays-or-json)
 
 <a name="introduction"></a>
-## Introduction
+## Εισαγωγή
 
-The Eloquent ORM included with Laravel provides a beautiful, simple ActiveRecord implementation for working with your database. Each database table has a corresponding "Model" which is used to interact with that table.
+Το Eloquent ORM που περιλαμβάνεται στο Laravel παρέχει μια όμορφη και απλή υλοποίηση του ActiveRecord για να χρησιμοποιήσετε με την βάση δεδομένων σας. Κάθε πίνακας στην βάση δεδομένων έχει ένα "Μοντέλο" στο οποίο αντιστοιχεί και το οποίο χρησιμοποιεί για την επικοινωνία με αυτόν τον πίνακα.
 
-Before getting started, be sure to configure a database connection in `app/config/database.php`.
+Πριν ξεκινήσετε, μην ξεχάσετε να διαμορφώσετε κατάλληλα την σύνδεση προς την βάση δεδομένων μέσα από το αρχείο `app/config/database.php`.
 
 <a name="basic-usage"></a>
-## Basic Usage
+## Βασική χρήση
 
-To get started, create an Eloquent model. Models typically live in the `app/models` directory, but you are free to place them anywhere that can be auto-loaded according to your `composer.json` file.
+Για να ξεκινήσετε, δημιουργήστε ένα μοντέλο Eloquent. Τα μοντέλα συνήθως βρίσκονται μέσα στον φάκελο `app/models`, αλλά μπορείτε να τα τοποθετήσετε όπου εσείς θέλετε, αρκεί βέβαια να τα φορτώνετε αυτόματα μέσα από το `composer.json` αρχείο σας.
 
-#### Defining An Eloquent Model
+#### Ορίζοντας ένα μοντέλο Eloquent
 
 	class User extends Eloquent {}
 
-Note that we did not tell Eloquent which table to use for our `User` model. The lower-case, plural name of the class will be used as the table name unless another name is explicitly specified. So, in this case, Eloquent will assume the `User` model stores records in the `users` table. You may specify a custom table by defining a `table` property on your model:
+Σημειώστε ότι δεν ορίσαμε στο Eloquent ποιόν πίνακα να χρησιμοποιήσει για το μοντέλο μας με όνομα `User`. Η χρήση πεζών γραμμάτων και ο πληθυντικός της κλάσης θα χρησιμοποιηθούν ως το όνομα του πίνακα, εκτός αν δωθεί κάποιο άλλο πιο συγκεκριμένο. Έτσι, σε αυτή την περίπτωση, το Eloquent θα υποθέσει ότι το μοντέλο με όνομα `User` αποθηκεύει δεδομένα στον πίνακα με όνομα `users`. Μπορείτε να ορίσετε κάποιον άλλον πίνακα με την χρήση της ιδιότητας `table` μέσα στο μοντέλο σας:
 
 	class User extends Eloquent {
 
@@ -44,31 +44,31 @@ Note that we did not tell Eloquent which table to use for our `User` model. The 
 
 	}
 
-> **Note:** Eloquent will also assume that each table has a primary key column named `id`. You may define a `primaryKey` property to override this convention. Likewise, you may define a `connection` property to override the name of the database connection that should be used when utilizing the model.
+> **Σημείωση:** Το Eloquent θα υποθέσει επίσης ότι κάθε πίνακας έχει μια στήλη με ένα πρωτεύον κλειδί που ονομάζεται `id`. Μπορείτε να ορίσετε μια ιδιότητα με όνομα `primaryKey` για να παρακάμψετε την προεπιλεγμένη τιμή. Με παρόμοιο τρόπο, μπορείτε να ορίσετε μια ιδιότητα με όνομα `connection` για να παρακάμψετε το όνομα της σύνδεσης προς την βάση δεδομένων που πρέπει να χρησιμοποιηθεί όταν αξιοποιείτε το μοντέλο model σας.
 
-Once a model is defined, you are ready to start retrieving and creating records in your table. Note that you will need to place `updated_at` and `created_at` columns on your table by default. If you do not wish to have these columns automatically maintained, set the `$timestamps` property on your model to `false`.
+Μόλις οριστεί ένα μοντέλο, είσαστε έτοιμοι να ξεκινήσετε να δημιουργήτε και να ανακτάτε δεδομένα μέσα στον πίνακά σας. Σημειώστε ότι θα χρειαστεί να ορίσετε τις στήλες με όνομα `updated_at` και `created_at` μέσα στον πίνακά σας ως προεπιλογή. Αν δεν επιθυμείτε να έχετε αυτές τις στήλες να υποστηρίζονται αυτόματα, ορίστε μια ιδιότητα με όνομα `$timestamps` μέσα στο μοντέλο σας και δώστε του την τιμή `false`.
 
-#### Retrieving All Models
+#### Ανακτώντας όλα τα μοντέλα
 
 	$users = User::all();
 
-#### Retrieving A Record By Primary Key
+#### Ανακτώντας δεδομένα με την χρήση πρωτεύοντος κλειδιού
 
 	$user = User::find(1);
 
 	var_dump($user->name);
 
-> **Note:** All methods available on the [query builder](/docs/queries) are also available when querying Eloquent models.
+> **Σημείωση:** Όλες οι μέθοδοι που είναι διαθέσιμοι στο [query builder](/docs/queries) είναι επίσης διαθέσιμοι για την χρήση των μοντέλων Eloquent.
 
-#### Retrieving A Model By Primary Key Or Throw An Exception
+#### Ανακτώντας ένα μοντέλο με την χρήση πρωτεύοντος κλειδιού ή 'ρίξε' μια εξαίρεση
 
-Sometimes you may wish to throw an exception if a model is not found, allowing you to catch the exceptions using an `App::error` handler and display a 404 page.
+Μερικές φορές μπορεί να θελήσετε να κάνετε χρήση κάποιας εξαίρεσης αν δεν βρεθεί ένα μοντέλο, δίνοντας σας την δυνατότητα να 'πιάσετε' την εξαίρεση αυτή με την χρήση του χειριστή `App::error` και να δείξετε στον χρήστη κάποια σελίδα 404.
 
 	$model = User::findOrFail(1);
 
 	$model = User::where('votes', '>', 100)->firstOrFail();
 
-To register the error handler, listen for the `ModelNotFoundException`
+Για να εγγράψετε τον χειριστή λάθους στην εφαρμογή σας, κάντε χρήση του `ModelNotFoundException`
 
 	use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -77,7 +77,7 @@ To register the error handler, listen for the `ModelNotFoundException`
 		return Response::make('Not Found', 404);
 	});
 
-#### Querying Using Eloquent Models
+#### Εκτελώντας Query με την χρήση μοντέλων Eloquent
 
 	$users = User::where('votes', '>', 100)->take(10)->get();
 
@@ -86,19 +86,19 @@ To register the error handler, listen for the `ModelNotFoundException`
 		var_dump($user->name);
 	}
 
-Of course, you may also use the query builder aggregate functions.
+Μπορείτε επίσης να χρησιμοποιήσετε τις λειουργίες του query builder σχετικά με τα σύνολα.
 
-#### Eloquent Aggregates
+#### Σύνολα Eloquent
 
 	$count = User::where('votes', '>', 100)->count();
 
-If you are unable to generate the query you need via the fluent interface, feel free to use `whereRaw`:
+Αν δεν μπορείτε να κάνετε χρήση του query αυτού, μπορείτε να δοκιμάσετε κάτι παρόμοιο όπως το `whereRaw`:
 
 	$users = User::whereRaw('age > ? and votes = 100', array(25))->get();
 
-#### Chunking Results
+#### 'Τεμαχίζοντας' τα αποτελέσματα
 
-If you need to process a lot (thousands) of Eloquent records, using the `chunk` command will allow you to do without eating all of your RAM:
+Αν χρειάζετε να επεξεργαστείτε πολλά (χιλιάδες) δεδομένα Eloquent, η χρήση της εντολής `chunk` θα σας επιτρέψει να το κάνετε χωρίς να καταναλώσετε όλη σας την μνήμη RAM:
 
 	User::chunk(200, function($users)
 	{
@@ -108,24 +108,24 @@ If you need to process a lot (thousands) of Eloquent records, using the `chunk` 
 		}
 	});
 
-The first argument passed to the method is the number of records you wish to receive per "chunk". The Closure passed as the second argument will be called for each chunk that is pulled from the database.
+Η πρώτη παράμετρος που δίνεται στην μέθοδο είναι ο αριθμός των καταγραφών που θέλετε να λάβετε σε κάθε 'τεμάχιο'. Η χρήση Closure ως δεύτερη παραμέτρος θα καλεστεί για κάθε τεμάχιο που ανακτάται από την βάση δεδομένων.
 
-#### Specifying The Query Connection
+#### Ορίζοντας το Query της σύνδεσης
 
-You may also specify which database connection should be used when running an Eloquent query. Simply use the `on` method:
+Μπορείτε επίσης να ορίσετε ποιά σύνδεση για την βάση δεδομένων πρέπει να χρησιμοποιηθεί όταν 'τρέχετε' ένα Eloquent query. Απλά χρησιμοποιήστε την μέθοδο `on`:
 
 	$user = User::on('connection-name')->find(1);
 
 <a name="mass-assignment"></a>
-## Mass Assignment
+## Μαζική εκχώρηση στοιχείων
 
-When creating a new model, you pass an array of attributes to the model constructor. These attributes are then assigned to the model via mass-assignment. This is convenient; however, can be a **serious** security concern when blindly passing user input into a model. If user input is blindly passed into a model, the user is free to modify **any** and **all** of the model's attributes. For this reason, all Eloquent models protect against mass-assignment by default.
+Όταν δημιουργήτε ένα νέο μοντέλο, δίνετε ως παράμετρο στον κατασκευαστή του μοντέλου έναν πίνακα με ιδιότητες. Αυτές οι ιδιότητες ανατίθενται στο μοντέλο μέσω της μαζικής εκχώρησης στοιχείων. Αυτό είναι βολικό; παρόλαυτα, μπορεί να είναι ένα πολύ **σοβαρό** θέμα ασφαλείας όταν απλώς περνάτε δεδομένα εισόδου των χρηστών μέσα στο μοντέλο σας. Αν τα δεδομένα εισόδου ενός χρήστη περνούν μέσα στο μοντέλο χωρίς επιτήρηση, ο χρήστης είναι ελεύθερος να διαμορφώσει **οποιαδήποτε** και ίσως **όλες** τις ιδιότητες του μοντέλου σας. Για αυτό τον λόγο, όλα τα μοντέλα Eloquent είναι προστατευμένα από την χρήση μαζικής εκχώρησης στοιχείων ως προεπιλογή.
 
-To get started, set the `fillable` or `guarded` properties on your model.
+Για να ξεκινήσετε, ορίστε τις ιδιότητες `fillable` ή `guarded` μέσα στο μοντέλο σας.
 
-The `fillable` property specifies which attributes should be mass-assignable. This can be set at the class or instance level.
+Η ιδιότητα `fillable` ορίζει ποιά χαρακτηριστικά πρέπει να μπορούν να εισάγονται μαζικά. Αυτό μπορεί να οριστεί στο επίπεδο της κλάσης ή του στιγμιοτύπου.
 
-#### Defining Fillable Attributes On A Model
+#### Ορίζοντας ένα χαρακτηριστικό Fillable σε ένα μοντέλο
 
 	class User extends Eloquent {
 
@@ -133,11 +133,11 @@ The `fillable` property specifies which attributes should be mass-assignable. Th
 
 	}
 
-In this example, only the three listed attributes will be mass-assignable.
+Σε αυτό το παράδειγμα, μόνο τα τρία αυτά χαρακτηριστικά μπορούν να δηλωθούν μαζικά.
 
-The inverse of `fillable` is `guarded`, and serves as a "black-list" instead of a "white-list":
+Το αντίθετο του χαρακτηριστικού `fillable` είναι `guarded`, και χρησιμοποιείται ως "μαύρη-λίστα":
 
-#### Defining Guarded Attributes On A Model
+#### Ορίζοντας χαρακτηριστικά Guarded σε ένα μοντέλο
 
 	class User extends Eloquent {
 
@@ -145,18 +145,18 @@ The inverse of `fillable` is `guarded`, and serves as a "black-list" instead of 
 
 	}
 
-In the example above, the `id` and `password` attributes may **not** be mass assigned. All other attributes will be mass assignable. You may also block **all** attributes from mass assignment using the guard method:
+Στο παραπάνω παράδειγμα, τα χαρακτηριστικά `id` και `password` **δεν** θα μπορούν να δηλωθούν μαζικά. Όλα τα άλλα χαρακτηριστικά θα μπορούν. Μπορείτε επίσης να μπλοκάρετε **όλα** τα χαρακτηριστικά από το να μπορούν να δηλώνονται μαζικά, με την χρήση της μεθόδου guard:
 
-#### Blocking All Attributes From Mass Assignment
+#### Μπλοκάροντας όλα τα χαρακτηριστικά από μαζική εκχώρηση
 
 	protected $guarded = array('*');
 
 <a name="insert-update-delete"></a>
 ## Insert, Update, Delete
 
-To create a new record in the database from a model, simply create a new model instance and call the `save` method.
+Για να δημιουργήσετε μια νέα καταγραφή στην βάση δεδομένων μέσα από ένα μοντέλο, απλά δημιουργήστε ένα νέο στιγμιότυπο του μοντέλου και καλέστε την μέθοδο `save`.
 
-#### Saving A New Model
+#### Αποθηκεύοντας ένα νέο μοντέλο
 
 	$user = new User;
 
@@ -164,15 +164,15 @@ To create a new record in the database from a model, simply create a new model i
 
 	$user->save();
 
-> **Note:** Typically, your Eloquent models will have auto-incrementing keys. However, if you wish to specify your own keys, set the `incrementing` property on your model to `false`.
+> **Σημείωση:** Συνήθως, τα Eloquent μοντέλα σας θα έχουν κλειδιά auto-incrementing. Παρόλαυτα, αν θελήσετε να ορίσετε τα δικά σας κλειδιά, ορίστε στην ιδιότητα `incrementing` μέσα στο μοντέλο σας την τιμή `false`.
 
-You may also use the `create` method to save a new model in a single line. The inserted model instance will be returned to you from the method. However, before doing so, you will need to specify either a `fillable` or `guarded` attribute on the model, as all Eloquent models protect against mass-assignment.
+Μπορείτε επίσης να χρησιμοποιήσετε την μέθοδο `create` ώστε να αποθηκεύσετε ένα νέο μοντέλο με μόνο μια γραμμή κώδικα. Το εισαγμένο στιγμιότυπο του μοντέλου θα σας επιστραφεί από την μέθοδο. Παρόλαυτα, πριν το κάνετε αυτό, θα χρειαστεί να ορίσετε είτε κάποιο `fillable` είτε κάποιο `guarded` χαρακτηριστικό μέσα στο μοντέλο σας, μιας και όλα τα μοντέλα Eloquent προστατεύονται από μαζική εκχώρηση στοιχείων.
 
-After saving or creating a new model that uses auto-incrementing IDs, you may retrieve the ID by accessing the object's `id` attribute:
+Αφού αποθηκεύσετε ή δημιουργήσετε ένα νέο μοντέλο που χρησιμοποιεί auto-incrementing IDs, μπορείτε να ανακτήσετε το ID έχοντας πρόσβαση στο χαρακτηριστικό `id` του αντικειμένου:
 
 	$insertedId = $user->id;
 
-#### Setting The Guarded Attributes On The Model
+#### Ορίζοντας τα χαρακτηριστικά Guarded στο μοντέλο
 
 	class User extends Eloquent {
 
@@ -180,7 +180,7 @@ After saving or creating a new model that uses auto-incrementing IDs, you may re
 
 	}
 
-#### Using The Model Create Method
+#### Χρησιμοποιώντας την μέθοδο μοντέλου Create
 
 	// Create a new user in the database...
 	$user = User::create(array('name' => 'John'));
