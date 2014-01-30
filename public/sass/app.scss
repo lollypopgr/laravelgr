@@ -52,7 +52,17 @@
 // @import "foundation/components/dropdown";
 
 
-/// LARAVEL.GR CUSTOM CSS
+
+
+//////////////////////////////
+///
+///   LARAVEL.GR CUSTOM CSS
+///
+///////////////////////////////
+
+
+// Google Font
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,greek);
 
 body {
   background: url(../images/lback.jpg) no-repeat center center fixed;
@@ -60,13 +70,55 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  font-family:  'Open Sans Condensed', sans-serif;
+    font-size:1.5em;
+
 }
 
-// .headertext{
-//     @include grid-column(4);
-// }
-
-.red {
-    background-color: red;
-    color:white;
+.header{
+  position:absolute;
+  margin-top:-80px;
+  z-index:6;
+  a{
+    text-decoration: none;
+    color:blue;
+    &:hover{
+      color:#00006F;
+    }
+  }
+}
+.theme{
+    width:100%;
+    z-index: 5;
+    margin-top:100px;
+    position:relative;
+    img{
+      width:100%;
+    }
+}
+.whatisit, nav{
+    font-size: .9em;
+    margin-top:2.3em;
+}
+.whatisit{
+    text-align: right;
+}
+nav{
+    text-align: left;
+}
+.logo{
+    text-align: center;
+}
+.community{
+  background-color: #0169CA;
+  padding:20px;
+  width:100%;
+  text-align:center;
+  color:white;
+}
+footer{
+  margin-top:20px;
+  font-size: .7em;
+  text-align: center;
+  position:relative;
 }

@@ -181,8 +181,8 @@ return array(
 		// Custom
 
 		'Twitter' 		  => 'Thujohn\Twitter\TwitterFacade',
-		'Image' => 'Intervention\Image\Facades\Image'
-
+		'Image' => 'Intervention\Image\Facades\Image',
+		'PictureFill' =>'laravelgr\picturefill\PictureFill'
 	),
 
 );

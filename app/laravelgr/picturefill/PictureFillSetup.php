@@ -4,9 +4,9 @@
 
 return [
 
-    ["_small","(min-width: 400px)"],
-    ["_medium","(min-width: 800px)"],
-    ["_large","(min-width: 1000px)"],
-    ["_xlarge","(min-width: 1400px)"]
+    ["_small","(max-width: 640px)"],
+    ["_medium","(min-width: 641px)"],
+    ["_large","(min-width: 1025px)"],
+    ["_xlarge","(min-width: 1441px)"]
 
     ];

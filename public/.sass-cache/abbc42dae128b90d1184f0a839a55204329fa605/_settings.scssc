@@ -1,7 +1,7 @@
 3.2.4 (Media Mark)
-a90b9e3144e78b74be6123ed9cde9b9a9b57dbd7
+f231491343245f38ccf69d649dbd0183b6beed6c
 o:Sass::Tree::RootNode
-:@template"hè//
+:@template"fè//
 // Foundation Variables
 //
 
@@ -69,7 +69,7 @@ $default-float: left;
 // $body-bg: #fff;
 // $body-font-color: #222;
 // $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-// $body-font-weight: normal;
+ $body-font-weight: normal;
 // $body-font-style: normal;
 
 // Font-smoothing
@@ -1327,7 +1327,7 @@ $default-float: left;
 // $topbar-sticky-class: ".sticky";
 // $topbar-arrows: true; //Set false to remove the triangle icon from the menu item
 :@options{ :@has_childrenT:
-@linei:@children[|o:Sass::Tree::CommentNode
+@linei:@children[~o:Sass::Tree::CommentNode
 ;@:@value["%/*
  * Foundation Variables
  * */:
@@ -1425,11 +1425,12 @@ space;	i-;@;	i-;
 ;@;[" /* Various global styles */;;;	iC;
 [ o;;"default-float;o:Sass::Script::String	;@;"	left;:identifier;	iE;@;	iE;
 [ ;0o;
-;@;["æ/* $body-bg: #fff;
+;@;["É/* $body-bg: #fff;
  * $body-font-color: #222;
- * $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
- * $body-font-weight: normal;
- * $body-font-style: normal; */;;;	iG;
+ * $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; */;;;	iG;
+[ o;;"body-font-weight;o;/	;@;"normal;;0;	iJ;@;	iJ;
+[ ;0o;
+;@;["$/* $body-font-style: normal; */;;;	iK;
 [ o;
 ;@;["/* Font-smoothing */;;;	iM;
 [ o;

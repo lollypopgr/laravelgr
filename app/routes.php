@@ -18,6 +18,4 @@ Route::get('/', function()
     return View::make('homepage');
 });
 
-
-
 Route::get('/docs/'.'{chapter?}', 'DocumentationController@showDocs');

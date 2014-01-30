@@ -83,8 +83,9 @@ class PictureFill {
     {
         $instance = static::$instance;
         if ( ! $instance) $instance = static::$instance = new static;
-
-        return $instance->responsiveImage($args[0],$args[1],$args[2]=null);
+        if($name=="make"){
+            return $instance->responsiveImage($args[0],$args[1],$args[2]=null);
+        }
     }
 }
 
