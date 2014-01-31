@@ -182,18 +182,18 @@
 
 #### Χρησιμοποιώντας την μέθοδο μοντέλου Create
 
-	// Create a new user in the database...
+	// Δημιουργήστε έναν νέο χρήστη στην βάση δεδομένων...
 	$user = User::create(array('name' => 'John'));
 
-	// Retrieve the user by the attributes, or create it if it doesn't exist...
+	// Ανακτήστε τον χρήστη από τα χαρακτηριστικά του, ή δημιουργήστε έναν νέο σε περίπτωση που δεν υπάρχει ήδη...
 	$user = User::firstOrCreate(array('name' => 'John'));
 
-	// Retrieve the user by the attributes, or instantiate a new instance...
+	// Ανακτήστε τον χρήστη από τα χαρακτηριστικά του, ή δημιουργήστε ένα νέο στιγμιότυπο του...
 	$user = User::firstOrNew(array('name' => 'John'));
 
-To update a model, you may retrieve it, change an attribute, and use the `save` method:
+Για να αναβαθμίσετε ένα μοντέλο, μπορείτε να το ανακτήσετε, να αλλάξετε κάποιο χαρακτηριστικό του, και έπειτα να κάνετε χρήση της μεθόδου `save`:
 
-#### Updating A Retrieved Model
+#### Αναβαθμίζοντας ένα ανακτηθέν μοντέλο
 
 	$user = User::find(1);
 
@@ -201,25 +201,25 @@ To update a model, you may retrieve it, change an attribute, and use the `save` 
 
 	$user->save();
 
-Sometimes you may wish to save not only a model, but also all of its relationships. To do so, you may use the `push` method:
+Μερικές φορές μπορεί να θελήσετε να αποθηκεύσετε όχι μόνο το μοντέλο, αλλά και όλες του τις συσχετίσεις. Για να το κάνετε αυτό, χρησιμοποιήστε την μέθοδο `push`:
 
-#### Saving A Model And Relationships
+#### Αποθηκεύοντας ένα μοντέλο και τις συσχετίσεις του
 
 	$user->push();
 
-You may also run updates as queries against a set of models:
+Μπορείτε επίσης να 'τρέξετε' κάποια queries ως αναβάθμιση ενάντια σε ένα συνολο από μοντέλα:
 
 	$affectedRows = User::where('votes', '>', 100)->update(array('status' => 2));
 
-To delete a model, simply call the `delete` method on the instance:
+Για να διαγράψετε ένα μοντέλο, απλά καλέστε την μέθοδο `delete` στο στιγμιότυπο:
 
-#### Deleting An Existing Model
+#### Διαγράψτε ένα ήδη υπάρχον μοντέλο
 
 	$user = User::find(1);
 
 	$user->delete();
 
-#### Deleting An Existing Model By Key
+#### Διαγράψτε ένα ήδη υπάρχον μοντέλο με βάση κάποιο κλειδί του
 
 	User::destroy(1);
 
@@ -227,20 +227,20 @@ To delete a model, simply call the `delete` method on the instance:
 
 	User::destroy(1, 2, 3);
 
-Of course, you may also run a delete query on a set of models:
+Φυσικά μπορείτε να τρέξετε ένα query διαγραφής σε ένα σύνολο από μοντέλα:
 
 	$affectedRows = User::where('votes', '>', 100)->delete();
 
-If you wish to simply update the timestamps on a model, you may use the `touch` method:
+Αν επιθυμείτε απλά να αναβαθμίσετε τα timestamps σε ένα μοντέλο, μπορείτε να χρησιμοποιήσετε την μέθοδο `touch`:
 
-#### Updating Only The Model's Timestamps
+#### Αναβαθμίζοντας μόνο τα Timestamps του μοντέλου
 
 	$user->touch();
 
 <a name="soft-deleting"></a>
 ## Soft Deleting
 
-When soft deleting a model, it is not actually removed from your database. Instead, a `deleted_at` timestamp is set on the record. To enable soft deletes for a model, specify the `softDelete` property on the model:
+Όταν κάνετε soft delete σε ένα μοντέλο, στην πραγματικότητα δεν απομακρύνεται από την βάση δεδομένων σας. Αντί αυτού, ένα timestamp με όνομα `deleted_at` καταγράφεται στην βάση σας. Για να ενεργοποιήσετε τα soft deletes για ένα μοντέλο, ορίστε την ιδιότητα `softDelete` μέσα σε αυτό:
 
 	class User extends Eloquent {
 
@@ -248,41 +248,41 @@ When soft deleting a model, it is not actually removed from your database. Inste
 
 	}
 
-To add a `deleted_at` column to your table, you may use the `softDeletes` method from a migration:
+Για να προσθέσετε μια στήλη με όνομα `deleted_at` στον πίνακα σας, μπορείτε να χρησιμοποιήσετε την μέθοδο `softDeletes` μέσα από ένα migration:
 
 	$table->softDeletes();
 
-Now, when you call the `delete` method on the model, the `deleted_at` column will be set to the current timestamp. When querying a model that uses soft deletes, the "deleted" models will not be included in query results. To force soft deleted models to appear in a result set, use the `withTrashed` method on the query:
+Τώρα, όταν καλείτε την μέθοδο `delete` σε ένα μοντέλο, η στήλη με όνομα `deleted_at` θα παίρνει την τιμή του τρέχοντος timestamp. Όταν κάνετε χρήση ενός query σε ένα μοντέλο που χρησιμοποιεί soft deletes, τα "διεγραμμένα" μοντέλα δεν θα περιλαμβάνονται στα αποτελέσματα του query. Για να εξαναγκάσετε τα soft deleted μοντέλα να εμφανιστούν σε ένα σύνολο αποτελεσμάτων, χρησιμοποιήστε την μέθοδο `withTrashed` στο query:
 
-#### Forcing Soft Deleted Models Into Results
+#### Εξαναγκάζοντας τα Soft Deleted μοντέλα μέσα σε αποτελέσματα
 
 	$users = User::withTrashed()->where('account_id', 1)->get();
 
-If you wish to **only** receive soft deleted models in your results, you may use the `onlyTrashed` method:
+Αν θελήσετε να λαμβάνετε **μόνο** τα soft deleted μοντέλα στα αποτελέσματά σας, μπορείτε να χρησιμοποιήσετε την μέθοδο `onlyTrashed`:
 
 	$users = User::onlyTrashed()->where('account_id', 1)->get();
 
-To restore a soft deleted model into an active state, use the `restore` method:
+Για να ανακτήσετε ένα soft deleted μοντέλο και να το ενεργοποιήσετε, χρησιμοποιήστε την μέθοδο `restore`:
 
 	$user->restore();
 
-You may also use the `restore` method on a query:
+Μπορείτε επίσης να χρησιμοποιήσετε την μέθοδο `restore` σε ένα query:
 
 	User::withTrashed()->where('account_id', 1)->restore();
 
-The `restore` method may also be used on relationships:
+Η μέθοδος `restore` μπορεί επίσης να χρησιμοποιηθεί σε συσχετίσεις:
 
 	$user->posts()->restore();
 
-If you wish to truly remove a model from the database, you may use the `forceDelete` method:
+Αν επιθυμείτε να αφαιρέσετε πραγματικά ένα μοντέλο από την βάση δεδομένων, χρησιμοποιήστε την μέθοδο `forceDelete`:
 
 	$user->forceDelete();
 
-The `forceDelete` method also works on relationships:
+Η μέθοδος `forceDelete` δουλεύει επίσης και με τις συσχετίσεις:
 
 	$user->posts()->forceDelete();
 
-To determine if a given model instance has been soft deleted, you may use the `trashed` method:
+Για να καθορίσετε αν ένα δοσμένο στιγμιότυπο μοντέλου έχει υποστεί soft delete, μπορείτε να χρησιμοποιήσετε την μέθοδο `trashed`:
 
 	if ($user->trashed())
 	{
@@ -292,9 +292,9 @@ To determine if a given model instance has been soft deleted, you may use the `t
 <a name="timestamps"></a>
 ## Timestamps
 
-By default, Eloquent will maintain the `created_at` and `updated_at` columns on your database table automatically. Simply add these `timestamp` columns to your table and Eloquent will take care of the rest. If you do not wish for Eloquent to maintain these columns, add the following property to your model:
+Από προεπιλογή, το Eloquent θα συντηρήσει τις στήλες `created_at` και `updated_at` μέσα στην βάση δεδομένων σας αυτόματα. Απλά προσθέστε αυτές τις στήλες `timestamp` στον πίνακά σας και το Eloquent θα τακτοποιήσει όλα τα υπόλοιπα. Αν δεν επιθυμείτε το Eloquent να συντηρεί αυτές τις στήλες, προσθέστε την ακόλουθη ιδιότητα στο μοντέλο σας:
 
-#### Disabling Auto Timestamps
+#### Απενεργοποιώντας τα αυτόματα Timestamps
 
 	class User extends Eloquent {
 
@@ -304,9 +304,9 @@ By default, Eloquent will maintain the `created_at` and `updated_at` columns on 
 
 	}
 
-If you wish to customize the format of your timestamps, you may override the `getDateFormat` method in your model:
+Αν επιθυμείτε να διαμορφώσετε την μορφή των timestamps, μπορείτε να παρακάμψετε την μέθοδο `getDateFormat` μέσα στο μοντέλο σας:
 
-#### Providing A Custom Timestamp Format
+#### Παρέχοντας μια προσαρμοσμένη μορφή Timestamp
 
 	class User extends Eloquent {
 
@@ -320,9 +320,9 @@ If you wish to customize the format of your timestamps, you may override the `ge
 <a name="query-scopes"></a>
 ## Query Scopes
 
-Scopes allow you to easily re-use query logic in your models. To define a scope, simply prefix a model method with `scope`:
+Τα Scopes σας επιτρέπουν να επαναχρησιμοποιήσετε έυκολα την λογική των query μέσα στα μοντέλα σας. Για να ορίσετε ένα scope, απλά εισάγετε ως πρόθεμα την λέξη `scope` σε μια μέθοδο μέσα στο μοντέλο σας:
 
-#### Defining A Query Scope
+#### Ορίζοντας ένα Query Scope
 
 	class User extends Eloquent {
 
@@ -338,13 +338,13 @@ Scopes allow you to easily re-use query logic in your models. To define a scope,
 
 	}
 
-#### Utilizing A Query Scope
+#### Αξιοποιώντας ένα Query Scope
 
 	$users = User::popular()->women()->orderBy('created_at')->get();
 
-#### Dynamic Scopes
+#### Δυναμικά Scopes
 
-Sometimes You may wish to define a scope that accepts parameters. Just add your parameters to your scope function:
+Μερικές φορές μπορεί να θέλετε να ορίσετε ένα scope το οποίο επιδέχεται κάποιες παραμέτρους. Απλά προσθέστε τις παραμέτρους που θέλετε στην λειτουργία scope:
 
 	class User extends Eloquent {
 
@@ -355,27 +355,27 @@ Sometimes You may wish to define a scope that accepts parameters. Just add your 
 
 	}
 
-Then pass the parameter into the scope call:
+Έπειτα δώστε τις παραμέτρους σας μέσα στην κλήση του scope:
 
 	$users = User::ofType('member')->get();
 
 <a name="relationships"></a>
-## Relationships
+## Συσχετίσεις
 
-Of course, your database tables are probably related to one another. For example, a blog post may have many comments, or an order could be related to the user who placed it. Eloquent makes managing and working with these relationships easy. Laravel supports four types of relationships:
+Πιθανώς οι πίνακες της βάσης δεδομένων σας να συσχετίζονται μεταξύ τους. Για παράδειγμα, μια δημοσίευση blog μπορεί να έχει πολλά σχόλια, ή μια παραγγελία μπορεί να σχετίζεται με τον χρήστη ο οποίος την έκανε. Το Eloquent κάνει την διαχείριση και την χρήση αυτών των συσχετίσεων εύκολη. Το Laravel υποστηρίζει τέσσερα είδη συσχετίσεων:
 
-- [One To One](#one-to-one)
-- [One To Many](#one-to-many)
-- [Many To Many](#many-to-many)
-- [Has Many Through](#has-many-through)
-- [Polymorphic Relations](#polymorphic-relations)
+- [Ένα με ένα](#one-to-one)
+- [Ένα με πολλά](#one-to-many)
+- [Πολλά με πολλά](#many-to-many)
+- [Αποτελείται από πολλά](#has-many-through)
+- [Πολυμορφικές συσχετίσεις](#polymorphic-relations)
 
 <a name="one-to-one"></a>
-### One To One
+### Ένα με ένα
 
-A one-to-one relationship is a very basic relation. For example, a `User` model might have one `Phone`. We can define this relation in Eloquent:
+Μια συσχέτιση ένα-με-ένα είναι μια πολύ βασική σχέση. Για παράδειγμα, ένα μοντέλο με όνομα `User` μπορεί να έχει ένα `Phone`. Μπορούμε να ορίσουμε αυτή την συσχέτιση με το Eloquent:
 
-#### Defining A One To One Relation
+#### Ορίζοντας μια συσχέτιση ένα με ένα
 
 	class User extends Eloquent {
 
@@ -386,25 +386,25 @@ A one-to-one relationship is a very basic relation. For example, a `User` model 
 
 	}
 
-The first argument passed to the `hasOne` method is the name of the related model. Once the relationship is defined, we may retrieve it using Eloquent's [dynamic properties](#dynamic-properties):
+Το πρώτο όρισμα που δίνεται στην μέθοδο `hasOne` είναι το όνομα του μοντέλου συσχέτισης. Μόλις οριστεί η συσχέτιση, μπορούμε να την ανακτήσουμε χρησιμοποιώντας τις δυναμικές ιδιότητες του Eloquent [dynamic properties](#dynamic-properties):
 
 	$phone = User::find(1)->phone;
 
-The SQL performed by this statement will be as follows:
+Η SQL που εκτελείται από αυτή την δήλωση, θα είναι κάπως έτσι:
 
 	select * from users where id = 1
 
 	select * from phones where user_id = 1
 
-Take note that Eloquent assumes the foreign key of the relationship based on the model name. In this case, `Phone` model is assumed to use a `user_id` foreign key. If you wish to override this convention, you may pass a second argument to the `hasOne` method. Furthermore, you may pass a third argument to the method to specify which local column that should be used for the association:
+Σημειώστε ότι το Eloquent υποθέτει το ξένο κλειδί της συσχέτισης βασιζόμενο στο όνομα του μοντέλου. Σε αυτή την περίπτωση, το μοντέλο `Phone` υποτίθεται ότι χρησιμοποιέι το ξένο κλειδί με όνομα `user_id`. Αν θελήσετε να παρακάμψετε αυτή την σύμβαση, μπορείτε να δώσετε μια δεύτερη παράμετρο στην μέθοδο `hasOne`. Επιπλέον, μπορείτε να δώσετε και μια τρίτη παράμετρο στη μέθοδο αυτή για να ορίσετε την νέα στήλη που θα πρέπει να χρησιμοποιηθεί για την συσχέτιση:
 
 	return $this->hasOne('Phone', 'foreign_key');
 
 	return $this->hasOne('Phone', 'foreign_key', 'local_key');
 
-#### Defining The Inverse Of A Relation
+#### Ορίζοντας το αντίστροφο μιας συσχέτισης
 
-To define the inverse of the relationship on the `Phone` model, we use the `belongsTo` method:
+Για να ορίσουμε το αντίστροφο μιας συσχέτισης στο μοντέλο `Phone`, χρησιμοποιούμε την μέθοδο `belongsTo`:
 
 	class Phone extends Eloquent {
 
@@ -415,7 +415,7 @@ To define the inverse of the relationship on the `Phone` model, we use the `belo
 
 	}
 
-In the example above, Eloquent will look for a `user_id` column on the `phones` table. If you would like to define a different foreign key column, you may pass it as the second argument to the `belongsTo` method:
+Στο παραπάνω παράδειγμα, το Eloquent θα ψάξει για μια στήλη με όνομα `user_id` στον πίνακα `phones`. Αν θέλετε να ορίσετε μια διαφορετική στήλη ξένου κλειδιού, μπορείτε να δώσετε μια δεύτερη παράμετρο στην μέθοδο `belongsTo`:
 
 	class Phone extends Eloquent {
 
@@ -426,7 +426,7 @@ In the example above, Eloquent will look for a `user_id` column on the `phones` 
 
 	}
 
-Additionally, you pass a third parameter which specifies the name of the associated column on the parent table:
+Επιπλέον, μπορείτε να δώσετε και μια τρίτη παράμετρο η οποία ορίζει το όνομα της νέας στήλης με την οποία θα συσχετίζεται ο γονικός πίνακας:
 
 	class Phone extends Eloquent {
 
@@ -438,9 +438,9 @@ Additionally, you pass a third parameter which specifies the name of the associa
 	}
 
 <a name="one-to-many"></a>
-### One To Many
+### Ένα με πολλά
 
-An example of a one-to-many relation is a blog post that "has many" comments. We can model this relation like so:
+Ένα παράδειγμα μιας συσχέτισης ένα-με-πολλά είναι μια δημοσίευση blog η οποία "έχει πολλά" σχόλια. Μπορούμε να μοντελοποιήσουμε αυτή την συσχέτιση με τον ακόλουθο τρόπο:
 
 	class Post extends Eloquent {
 
@@ -451,23 +451,23 @@ An example of a one-to-many relation is a blog post that "has many" comments. We
 
 	}
 
-Now we can access the post's comments through the [dynamic property](#dynamic-properties):
+Τώρα μπορούμε να έχουμε πρόσβαση στα σχόλια της δημοσίευσης μέσω των δυναμικών ιδιοτήτων [dynamic property](#dynamic-properties):
 
 	$comments = Post::find(1)->comments;
 
-If you need to add further constraints to which comments are retrieved, you may call the `comments` method and continue chaining conditions:
+Αν χρειαστείτε να προσθέσετε επιπλέον περιορισμούς με τον οποίο θα πρέπει να σχόλια να ανακτούνται, μπορείτε να καλέσετε την μέθοδο `comments` και να συνεχίσετε να προσθέτετε συνθήκες:
 
 	$comments = Post::find(1)->comments()->where('title', '=', 'foo')->first();
 
-Again, you may override the conventional foreign key by passing a second argument to the `hasMany` method. And, like the `hasOne` relation, the local column may also be specified:
+Όπως και πριν, μπορείτε να παρακάμψετε το κατά σύμβαση ξένο κλειδί, δίνοντας μια δεύτερη παράμετρο στην μέθοδο `hasMany`. Και όπως ακριβώς με την συσχέτιση `hasOne`, μια νέα στήλη μπορεί να οριστεί για χρήση:
 
 	return $this->hasMany('Comment', 'foreign_key');
 
 	return $this->hasMany('Comment', 'foreign_key', 'local_key');
 
-To define the inverse of the relationship on the `Comment` model, we use the `belongsTo` method:
+Για να ορίσετε το αντίστροφο της συσχέτισης στο μοντέλο `Comment`, χρησιμοποιείστε την μέθοδο `belongsTo`:
 
-#### Defining The Inverse Of A Relation
+#### Ορίζοντας το αντίστροφο μιας συσχέτισης
 
 	class Comment extends Eloquent {
 
@@ -479,11 +479,11 @@ To define the inverse of the relationship on the `Comment` model, we use the `be
 	}
 
 <a name="many-to-many"></a>
-### Many To Many
+### Πολλά με πολλά
 
-Many-to-many relations are a more complicated relationship type. An example of such a relationship is a user with many roles, where the roles are also shared by other users. For example, many users may have the role of "Admin". Three database tables are needed for this relationship: `users`, `roles`, and `role_user`. The `role_user` table is derived from the alphabetical order of the related model names, and should have `user_id` and `role_id` columns.
+Οι συσχετίσεις πολλά-με-πολλά είναι ένα πιο σύνθετο θέμα. Ένα παράδειγμα μιας τέτοιας συσχέτισης είναι ένας χρήστης με πολλούς ρόλους, όπου οι ρόλοι επίσης μοιράζονται και με άλλους χρήστες. Για παράδειγμα, πολλοί χρήστες μπορεί να έχουν τον ρόλο "Admin". Χρειάζονται τρεις πίνακες στην βάση δεδομένων για αυτή την συσχέτιση: `users`, `roles`, και `role_user`. Ο πίνακας `role_user` δημιουργείται από την αλφαβητική σειρά των ονομάτων των σχετικών μοντέλων, και πρέπει να έχει στήλες με τα ονόματα `user_id` και `role_id`.
 
-We can define a many-to-many relation using the `belongsToMany` method:
+Μπορούμε να ορίσουμε μια συσχέτιση πολλά-με-πολλά χρησιμοποιώντας την μέθοδο `belongsToMany`:
 
 	class User extends Eloquent {
 
@@ -494,19 +494,19 @@ We can define a many-to-many relation using the `belongsToMany` method:
 
 	}
 
-Now, we can retrieve the roles through the `User` model:
+Τώρα, μπορούμε να ανακτήσουμε τους ρόλους μέσα από το μοντέλο του `User`:
 
 	$roles = User::find(1)->roles;
 
-If you would like to use an unconventional table name for your pivot table, you may pass it as the second argument to the `belongsToMany` method:
+Αν θέλετε να χρησιμοποιήσετε κάποιο άλλο όνομα για τον πίνακα pivot σας, μπορείτε να ορίσετε μια δεύτερη παράμετρο στην μέθοδο `belongsToMany`:
 
 	return $this->belongsToMany('Role', 'user_roles');
 
-You may also override the conventional associated keys:
+Μπορείτε επίσης να παρακάμψετε και τα ονόματα των κλειδιών συσχέτισης:
 
 	return $this->belongsToMany('Role', 'user_roles', 'user_id', 'foo_id');
 
-Of course, you may also define the inverse of the relationship on the `Role` model:
+Φυσικά, μπορείτε να ορίσετε την αντίστροφη συσχέτιση στο μοντέλο `Role`:
 
 	class Role extends Eloquent {
 
@@ -518,9 +518,9 @@ Of course, you may also define the inverse of the relationship on the `Role` mod
 	}
 
 <a name="has-many-through"></a>
-### Has Many Through
+### Αποτελείται από πολλά
 
-The "has many through" relation provides a convenient short-cut for accessing distant relations via an intermediate relation. For example, a `Country` model might have many `Posts` through a `Users` model. The tables for this relationship would look like this:
+Η συσχέτιση "αποτελείται από πολλά" μας δίνει την δυνατότητα πρόσβασης μακρυνών συσχετίσεων μέσω μιας ενδιάμεσης σχέσης. Για παράδειγμα, ένα μοντέλο με όνομα `Country` μπορεί να έχει πολλά `Posts` μέσω ενός μοντέλου `Users`. Οι πίνακες για αυτή την συσχέτιση θα είναι κάπως έτσι:
 
 	countries
 		id - integer
@@ -536,7 +536,7 @@ The "has many through" relation provides a convenient short-cut for accessing di
 		user_id - integer
 		title - string
 
-Even though the `posts` table does not contain a `country_id` column, the `hasManyThrough` relation will allow us to access a country's posts via `$country->posts`. Let's define the relationship:
+Παρόλο που ο πίνακας `posts` δεν περιέχει μια στήλη με όνομα `country_id`, η συσχέτιση `hasManyThrough` θα μας επιτρέψει να έχουμε πρόσβαση σε ένα country post μέσω του `$country->posts`. Ας ορίσουμε την συσχέτιση:
 
 	class Country extends Eloquent {
 
@@ -547,7 +547,7 @@ Even though the `posts` table does not contain a `country_id` column, the `hasMa
 
 	}
 
-If you would like to manually specify the keys of the relationship, you may pass them as the third and fourth arguments to the method:
+Αν θέλετε να ορίσετε τα κλειδιά της συσχέτισης χειροκίνητα, μπορείτε να τα ορίσετε ως τρίτη και τέταρτη παράμετρο στην μέθοδο:
 
 	class Country extends Eloquent {
 
@@ -559,9 +559,9 @@ If you would like to manually specify the keys of the relationship, you may pass
 	}
 
 <a name="polymorphic-relations"></a>
-### Polymorphic Relations
+### Πολυμορφικές συσχετίσεις
 
-Polymorphic relations allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a staff model or an order model. We would define this relation like so:
+Οι πολυμορφικές συσχετίσεις επιτρέπουν σε ένα μοντέλο να ανήκει σε παραπάνω από ένα ακόμα μοντέλο, σε μια μόνο σχέση. Για παράδειγμα, μπορεί να έχετε ένα μοντέλο φωτογραφιών που ανήκει είτε σε ένα μοντέλο staff είτε σε ένα μοντέλο order. Θα πρέπει να ορίσουμε αυτή την συσχέτιση με τον ακόλουθο τρόπο:
 
 	class Photo extends Eloquent {
 
@@ -590,9 +590,9 @@ Polymorphic relations allow a model to belong to more than one other model, on a
 
 	}
 
-Now, we can retrieve the photos for either a staff member or an order:
+Τώρα, μπορούμε να ανακτήσουμε τις φωτογραφίες και για ένα staff member και για ένα order:
 
-#### Retrieving A Polymorphic Relation
+#### Ανακτώντας μια πολυμορφική συσχέτιση
 
 	$staff = Staff::find(1);
 
@@ -601,19 +601,19 @@ Now, we can retrieve the photos for either a staff member or an order:
 		//
 	}
 
-#### Retrieving The Owner Of A Polymorphic Relation
+#### Ανακτώντας τον ιδιοκτήτη μιας πολυμορφικής συσχέτισης
 
-However, the true "polymorphic" magic is when you access the staff or order from the `Photo` model:
+Παρόλαυτα, η αληθινή μαγεία του "πολυμορφισμού" είναι όταν έχετε πρόσβαση στο staff ή στο order από το μοντέλο `Photo`:
 
 	$photo = Photo::find(1);
 
 	$imageable = $photo->imageable;
 
-The `imageable` relation on the `Photo` model will return either a `Staff` or `Order` instance, depending on which type of model owns the photo.
+Η συσχέτιση `imageable` στο μοντέλο `Photo` θα σας επιστρέψει είτε ένα στιγμιότυπο του μοντέλου `Staff` είτε ένα άλλο του μοντέλου `Order`, ανάλογα σε ποιό είδος μοντέλου ανήκει η φωτογραφία.
 
-To help understand how this works, let's explore the database structure for a polymorphic relation:
+Για να καταλάβετε τον τρόπο με τον οποίο γίνεται αυτό, ας εξερευνήσουμε την δομή της βάσης δεδομένων μας σχετικά με τις πολυμορφικές συσχετίσεις:
 
-#### Polymorphic Relation Table Structure
+#### Δομή πίνακα πολυμορφικής συσχέτισης
 
 	staff
 		id - integer
@@ -629,12 +629,12 @@ To help understand how this works, let's explore the database structure for a po
 		imageable_id - integer
 		imageable_type - string
 
-The key fields to notice here are the `imageable_id` and `imageable_type` on the `photos` table. The ID will contain the ID value of, in this example, the owning staff or order, while the type will contain the class name of the owning model. This is what allows the ORM to determine which type of owning model to return when accessing the `imageable` relation.
+Τα πεδία κλειδί εδώ είναι τα `imageable_id` και `imageable_type` στον πίνακα `photos`. Το ID θα περιέχει την τιμή του ID, και σε αυτό το παράδειγμα, το κατέχον staff ή order, ενώ ο τύπος θα περιέχει το όνομα της κλάσης του μοντέλου. Αυτό είναι που επιτρέπει στο ORM να ορίσει ποιόν τύπο μοντέλου να επιστρέψει όταν έχουμε πρόσβαση στην συσχέτιση `imageable`.
 
 <a name="querying-relations"></a>
 ## Querying Relations
 
-When accessing the records for a model, you may wish to limit your results based on the existence of a relationship. For example, you wish to pull all blog posts that have at least one comment. To do so, you may use the `has` method:
+Όταν έχετε πρόσβαση στις καταγραφές ενός μοντέλου, μπορεί να θέλετε να περιορίσετε τα αποτελέσματά σας βασιζόμενοι στην ύπαρξη μιας συσχέτισης. Για παράδειγμα, μπορεί να θέλετε να ανακτήσετε όλες τις δημοσιεύσεις blog που έχουν τουλάχιστον ένα σχόλιο. Για να το κάνετε αυτό, μπορείτε να χρησιμοποιείσετε την μέθοδο `has`:
 
 #### Querying Relations When Selecting
 
