@@ -10,7 +10,7 @@
 - [Συσχετίσεις](#relationships)
 - [Querying Relations](#querying-relations)
 - [Προθυμοποίηση φόρτωσης](#eager-loading)
-- [Εισάγοντας σχετικά μοντέλα](#inserting-related-models)
+- [Εισάγοντας μοντέλα συσχέτισης](#inserting-related-models)
 - [Αναβαθμίζοντας τα Parent Timestamps](#touching-parent-timestamps)
 - [Δουλεύοντας με Pivot Tables](#working-with-pivot-tables)
 - [Συλλογές](#collections)
@@ -640,11 +640,11 @@
 
 	$posts = Post::has('comments')->get();
 
-You may also specify an operator and a count:
+Μπορείτε επίσης να ορίσετε ένα τελεστή και έναν μετρητή:
 
 	$posts = Post::has('comments', '>=', 3)->get();
 
-If you need even more power, you may use the `whereHas` and `orWhereHas` methods to put "where" conditions on your `has` queries:
+Αν χρειάζεστε ακόμα περισσότερη δύναμη, μπορείτε να χρησιμοποιήσετε τις μεθόδους `whereHas` και `orWhereHas` ώστε να ορίσετε συνθήκες "where" στα queries με όνομα `has`:
 
 	$posts = Post::whereHas('comments', function($q)
 	{
@@ -653,9 +653,9 @@ If you need even more power, you may use the `whereHas` and `orWhereHas` methods
 	})->get();
 
 <a name="dynamic-properties"></a>
-### Dynamic Properties
+### Δυναμικές Ιδιότητες
 
-Eloquent allows you to access your relations via dynamic properties. Eloquent will automatically load the relationship for you, and is even smart enough to know whether to call the `get` (for one-to-many relationships) or `first` (for one-to-one relationships) method.  It will then be accessible via a dynamic property by the same name as the relation. For example, with the following model `$phone`:
+Το Eloquent σας επιτρέπει να έχετε πρόσβαση στις συσχετίσεις σας μέσω των δυναμικών ιδιοτήτων. Το Eloquent θα φορτώσει αυτόματα την συσχέτιση για εσάς, και είναι αρκέτα έξυπνο ώστε να γνωρίζει αν θα πρέπει να καλέσει την μέθοδο `get` (για συσχέτιση ένα-με-πολλά) ή  την μέθοδο `first` (για συσχέτιση ένα-με-ένα). Έπειτα θα είναι προσβάσιμο μέσω μιας δυναμικής ιδιότητας η οποία θα έχει το ίδιο όνομα με την συσχέτιση. Για παράδειγμα, με το ακόλουθο μοντέλο `$phone`:
 
 	class Phone extends Eloquent {
 
@@ -668,20 +668,20 @@ Eloquent allows you to access your relations via dynamic properties. Eloquent wi
 
 	$phone = Phone::find(1);
 
-Instead of echoing the user's email like this:
+Αντί να έχουμε πρόσβαση στο email του χρήστη με αυτό τον τρόπο:
 
 	echo $phone->user()->first()->email;
 
-It may be shortened to simply:
+θα μπορούμε να το κάνουμε πιο απλά, κάπως έτσι:
 
 	echo $phone->user->email;
 
-> **Note:** Relationships that return many results will return an instance of the `Illuminate\Database\Eloquent\Collection` class.
+> **Σημείωση:** Οι συσχετίσεις που μας δίνουν πολλά αποτελέσματα, μας επιστρέφουν ένα στιγμιότυπο της κλάσης `Illuminate\Database\Eloquent\Collection`.
 
 <a name="eager-loading"></a>
-## Eager Loading
+## Προθυμοποίηση φόρτωσης (Eager Loading)
 
-Eager loading exists to alleviate the N + 1 query problem. For example, consider a `Book` model that is related to `Author`. The relationship is defined like so:
+Το Eager loading υπάρχει για να μας 'ανακουφίζει' από το N + 1 query πρόβλημα. Για παράδειγμα, θεωρήστε ένα μοντέλο με όνομα `Book` που σχετίζεται με το μοντέλο `Author`. Η συσχέτιση ορίζεται κάπως έτσι:
 
 	class Book extends Eloquent {
 
@@ -692,65 +692,65 @@ Eager loading exists to alleviate the N + 1 query problem. For example, consider
 
 	}
 
-Now, consider the following code:
+Τώρα σκεφτείτε τον ακόλουθο κώδικα:
 
 	foreach (Book::all() as $book)
 	{
 		echo $book->author->name;
 	}
 
-This loop will execute 1 query to retrieve all of the books on the table, then another query for each book to retrieve the author. So, if we have 25 books, this loop would run 26 queries.
+Αυτό το loop θα εκτελέσει 1 query για να ανακτήσει όλα τα βιβλία που περιέχονται στον πίνακα, έπειτα ένα άλλο query για κάθε βιβλίο για να ανακτήση τον author. Άρα, αν έχουμε 25 βιβλία, αυτό το loop θα εκτελέσει 26 queries.
 
-Thankfully, we can use eager loading to drastically reduce the number of queries. The relationships that should be eager loaded may be specified via the `with` method:
+Ευτυχώς, μπορούμε να κάνουμε χρήση του eager loading για να μειώσουμε δραστικά τον αριθμό των queries. Η συσχέτιση που πρέπει να υποστεί το eager loaded μπορεί να οριστεί με την μέθοδο `with`:
 
 	foreach (Book::with('author')->get() as $book)
 	{
 		echo $book->author->name;
 	}
 
-In the loop above, only two queries will be executed:
+Στο loop παραπάνω, μόνο δύο queries θα εκτελεστούν:
 
 	select * from books
 
 	select * from authors where id in (1, 2, 3, 4, 5, ...)
 
-Wise use of eager loading can drastically increase the performance of your application.
+Σωστή χρήση του eager loading μπορεί να αυξήσει δραστικά την επίδοση της εφαρμογής σας.
 
-Of course, you may eager load multiple relationships at one time:
+Μπορείτε να κάνετε χρήση του eager load για πολλές συσχετίσεις ταυτόχρονα:
 
 	$books = Book::with('author', 'publisher')->get();
 
-You may even eager load nested relationships:
+Μπορείτε επίσης να κάνετε eager load σε εμφωλευμένες συσχετίσεις:
 
 	$books = Book::with('author.contacts')->get();
 
-In the example above, the `author` relationship will be eager loaded, and the author's `contacts` relation will also be loaded.
+Στο παράδειγμα παραπάνω, η συσχέτιση `author` θα 'φορτωθεί πρόθυμα', και η συσχέτιση `contacts` θα φορτωθεί επίσης.
 
-### Eager Load Constraints
+### Περιορισμοί Eager Load
 
-Sometimes you may wish to eager load a relationship, but also specify a condition for the eager load. Here's an example:
+Μερικές φορές μπορεί να επιθυμείτε μια συσχέτιση να κάνει χρήση του eager load, αλλά και να ορίσετε κάποια συνθήκη για το eager load. Για παράδειγμα:
 
 	$users = User::with(array('posts' => function($query)
 	{
 		$query->where('title', 'like', '%first%');
 	}))->get();
 
-In this example, we're eager loading the user's posts, but only if the post's title column contains the word "first".
+Σε αυτό το παράδειγμα, χρησιμοποιούμε eager loading στις δημοσιεύσεις του χρήστη, αλλά μόνο αν ο τίτλος των δημοσιεύσεων περιέχει την λέξη "first".
 
 ### Lazy Eager Loading
 
-It is also possible to eagerly load related models directly from an already existing model collection. This may be useful when dynamically deciding whether to load related models or not, or in combination with caching.
+Είναι επίσης δυνατό να κάνετε χρήση του eager load σε μοντέλα συσχέτισης απευθείας από μια ήδη υπάρχον συλλογή μοντέλων. Αυτό μπορεί να είναι χρήσιμο όταν αποφασίζετε δυναμικά αν θα πρέπει να φορτώσετε μοντέλα συσχέτισης ή όχι, ή σε συνδυασμό με την χρήση της μνήμης cache.
 
 	$books = Book::all();
 
 	$books->load('author', 'publisher');
 
 <a name="inserting-related-models"></a>
-## Inserting Related Models
+## Εισάγοντας μοντέλα συσχέτισης
 
-You will often need to insert new related models. For example, you may wish to insert a new comment for a post. Instead of manually setting the `post_id` foreign key on the model, you may insert the new comment from its parent `Post` model directly:
+Συχνά θα χρειαστεί να εισάγετε νέα μοντέλα συσχέτισης. Για παράδειγμα, μπορεί να θελήσετε να εισάγετε ένα νέο σχόλιο για μια δημοσίευση. Αντί να ορίσετε χειροκίνητα το ξένο κλειδί `post_id` μέσα στο μοντέλο, μπορείτε να εισάγετε το νέο σχόλιο μέσα από το πατρικό μοντέλο `Post` απευθείας:
 
-#### Attaching A Related Model
+#### Επισυνάπτοντας ένα μοντέλο συσχέτισης
 
 	$comment = new Comment(array('message' => 'A new comment.'));
 
@@ -758,11 +758,11 @@ You will often need to insert new related models. For example, you may wish to i
 
 	$comment = $post->comments()->save($comment);
 
-In this example, the `post_id` field will automatically be set on the inserted comment.
+Σε αυτό το παράδειγμα, το πεδίο `post_id` θα οριστεί αυτόματα στο σχόλιο που εισάχθηκε.
 
-### Associating Models (Belongs To)
+### Μοντέλα σύνδεσης (Ανήκει σε)
 
-When updating a `belongsTo` relationship, you may use the `associate` method. This method will set the foreign key on the child model:
+Όταν αναβαθμίζετε μια συσχέτιση `belongsTo`, μπορείτε να χρησιμοποιήσετε την μέθοδο `associate`. Αυτή η μέθοδος θα ορίσει το ξένο κλειδί στο μοντέλο 'παιδί':
 
 	$account = Account::find(10);
 
@@ -770,50 +770,50 @@ When updating a `belongsTo` relationship, you may use the `associate` method. Th
 
 	$user->save();
 
-### Inserting Related Models (Many To Many)
+### Εισάγοντας μοντέλα συσχέτισης (Πολλά με πολλά)
 
-You may also insert related models when working with many-to-many relations. Let's continue using our `User` and `Role` models as examples. We can easily attach new roles to a user using the `attach` method:
+Μπορείτε επίσης να εισάγετε μοντέλα συσχέτισης όταν δουλεύετε με με σχέσεις πολλά-με-πολλά. Θα συνεχίσουμε να χρησιμοποιούμε σαν παράδειγμα τα μοντέλα μας `User` και `Role`. Μπορούμε εύκολα να επισυνάψουμε νέους ρόλους σε έναν χρήστη με την χρήση της μεθόδου `attach`:
 
-#### Attaching Many To Many Models
+#### Επισυνάπτοτνας μοντέλα πολλά με πολλά
 
 	$user = User::find(1);
 
 	$user->roles()->attach(1);
 
-You may also pass an array of attributes that should be stored on the pivot table for the relation:
+Μπορείτε επίσης να δώσετε έναν πίνακα από παραμέτρους που θα πρέπει να αποθηκευτεί σε έναν πίνακα pivot για την συσχέτιση:
 
 	$user->roles()->attach(1, array('expires' => $expires));
 
-Of course, the opposite of `attach` is `detach`:
+Το αντίθετο του `attach` είναι το `detach`:
 
 	$user->roles()->detach(1);
 
-You may also use the `sync` method to attach related models. The `sync` method accepts an array of IDs to place on the pivot table. After this operation is complete, only the IDs in the array will be on the intermediate table for the model:
+Μπορείτε επίσης να χρησιμοποιήσετε την μέθοδο `sync` για να επισυνάψετε μοντέλα συσχέτισης. Η μέθοδος `sync` αποδέχεται έναν πίνακα με IDs για να τοποθετηθούν σε έναν πίνακα pivot. Αφού ολοκληρωθεί αυτή η λειτουργία, μόνο τα IDs μέσα στον πίνακα θα βρίσκονται μέσα στον ενδιάμεσο πίνακα για το μοντέλο:
 
-#### Using Sync To Attach Many To Many Models
+#### Χρησιμοποιώντας την μέθοδο Sync για επισύναψη μοντέλων πολλά με πολλά
 
 	$user->roles()->sync(array(1, 2, 3));
 
-You may also associate other pivot table values with the given IDs:
+Μπορείτε επίσης να συσχετίσετε άλλες τιμές του πίνακα pivot με τα δωσμένα IDs:
 
-#### Adding Pivot Data When Syncing
+#### Προσθέτοντας δεδομένα Pivot καθώς χρησιμοποιείτε Syncing
 
 	$user->roles()->sync(array(1 => array('expires' => true)));
 
-Sometimes you may wish to create a new related model and attach it in a single command. For this operation, you may use the `save` method:
+Μερικές φορές μπορεί να επιθυμείτε να δημιουργήσετε ένα νέο μοντέλο συσχέτισης και να το επισυνάψετε σε μια και μόνη εντολή. Για αυτή την διαδικασία, μπορείτε να χρησιμοποιήσετε την μέθοδο `save`:
 
 	$role = new Role(array('name' => 'Editor'));
 
 	User::find(1)->roles()->save($role);
 
-In this example, the new `Role` model will be saved and attached to the user model. You may also pass an array of attributes to place on the joining table for this operation:
+Σε αυτό το παράδειγμα, το νέο μοντέλο `Role` θα αποθηκευτεί και θα επισυναπτεί στο μοντέλο user. Μπορείτε επίσης να περάσετε έναν πίνακα με παραμέτρους για να βάλετε στον πίνακα της βάσης σας:
 
 	User::find(1)->roles()->save($role, array('expires' => $expires));
 
 <a name="touching-parent-timestamps"></a>
-## Touching Parent Timestamps
+## Αναβαθμίζοντας τα Parent Timestamps
 
-When a model `belongsTo` another model, such as a `Comment` which belongs to a `Post`, it is often helpful to update the parent's timestamp when the child model is updated. For example, when a `Comment` model is updated, you may want to automatically touch the `updated_at` timestamp of the owning `Post`. Eloquent makes it easy. Just add a `touches` property containing the names of the relationships to the child model:
+Όταν ένα μοντέλο ανήκει (`belongsTo`) σε ένα άλλο μοντέλο, όπως για παράδειγμα ένα μοντέλο `Comment` το οποίο ανήκει σε ένα μοντέλο `Post`, είναι συχνά χρήσιμο να αναβαθμίσετε τα γονικά parent's όταν αναβαθμίσετε και το μοντέλο 'παιδί'. Για παράδειγμα, όταν ένα μοντέλο `Comment` αναβαθμίζετε, μπορεί να θελήσετε να αναβαθμίσετε αυτόματα το `updated_at` timestamp του μοντέλου `Post` στο οποίο ανήκει. Το Eloquent το κάνει αυτό πολύ εύκολο. Απλά προσθέστε την ιδιότητα `touches` εμπεριέχοντας τα ονόματα της συσχέτισης του μοντέλου 'παιδί':
 
 	class Comment extends Eloquent {
 
@@ -826,7 +826,7 @@ When a model `belongsTo` another model, such as a `Comment` which belongs to a `
 
 	}
 
-Now, when you update a `Comment`, the owning `Post` will have its `updated_at` column updated:
+Τώρα, όταν αναβαθμίσετε ένα μοντέλο `Comment`, το μοντέλο `Post` στο οποίο ανήκει θα αναβαθμίσει την στήλη με όνομα `updated_at`:
 
 	$comment = Comment::find(1);
 
@@ -835,9 +835,9 @@ Now, when you update a `Comment`, the owning `Post` will have its `updated_at` c
 	$comment->save();
 
 <a name="working-with-pivot-tables"></a>
-## Working With Pivot Tables
+## Δουλεύοντας με Pivot Tables
 
-As you have already learned, working with many-to-many relations requires the presence of an intermediate table. Eloquent provides some very helpful ways of interacting with this table. For example, let's assume our `User` object has many `Role` objects that it is related to. After accessing this relationship, we may access the `pivot` table on the models:
+Όπως έχετε ήδη μάθει, δουλεύοντας με σχέσεις πολλά-με-πολλά απαιτεί την παρουσία ενός ενδιάμεσου πίνακα. Το Eloquent μας προσφέρει μερικούς πολύ χρήσιμους τρόπους αλληλεπίδρασης με αυτόν τον πίνανκα. Για παράδειγμα, ας υποθέσουμε ότι το αντικείμενό μας με όνομα `User` έχει πολλά αντικείμενα με όνομα `Role` με τα οποία σχετίζεται. Αφού αποκτήσουμε πρόσβαση σε αυτή την συσχέτιση, μπορούμε να έχουμε πρόσβαση και στον πίνακα `pivot` μέσα στα μοντέλα:
 
 	$user = User::find(1);
 
@@ -846,29 +846,29 @@ As you have already learned, working with many-to-many relations requires the pr
 		echo $role->pivot->created_at;
 	}
 
-Notice that each `Role` model we retrieve is automatically assigned a `pivot` attribute. This attribute contains a model representing the intermediate table, and may be used as any other Eloquent model.
+Σημειώστε ότι σε κάθε μοντέλο `Role` που ανακτούμε, δίνεται αυτόματα ένα χαρακτηριστικό `pivot`. Αυτό το χαρακτηριστικό περιέχει ένα μοντέλο το οποίο αναπαραστεί τοω ενδιάμεσο πίνακα, και μπορεί να χρησιμοποιηθεί όπως και οποιοδήποτε άλλο μοντέλο Eloquent.
 
-By default, only the keys will be present on the `pivot` object. If your pivot table contains extra attributes, you must specify them when defining the relationship:
+Από προεπιλογή, μόνο τα κλειδιά θα είναι παρών στο αντικείμενο `pivot`. Αν ο πίνακας pivot περιέχει επιπλέον χαρακτηριστικά, πρέπει να τα ορίσετε όταν ορίζετε την συσχέτιση:
 
 	return $this->belongsToMany('Role')->withPivot('foo', 'bar');
 
-Now the `foo` and `bar` attributes will be accessible on our `pivot` object for the `Role` model.
+Τώρα τα χαρακτηριστικά με όνομα `foo` και `bar` θα είναι προσβάσιμα στο αντικείμενο `pivot` για το μοντέλο `Role`.
 
-If you want your pivot table to have automatically maintained `created_at` and `updated_at` timestamps, use the `withTimestamps` method on the relationship definition:
+Αν θέλετε ο πίνακας pivot να περιέχει αυτόματα τα timestamps `created_at` και `updated_at`, χρησιμοποιήστε την μέθοδο `withTimestamps` στον ορισμό της συσχέτισης:
 
 	return $this->belongsToMany('Role')->withTimestamps();
 
-To delete all records on the pivot table for a model, you may use the `detach` method:
+Για να διαγράψετε όλα τα δεδομένα στον πίνακα pivot table για ένα συγκεκριμένο μοντέλο, μπορείτε να χρησιμοποιήσετε την μέθοδο `detach`:
 
-#### Deleting Records On A Pivot Table
+#### Διαγράφοντας δεδομένα σε έναν πίνακα Pivot
 
 	User::find(1)->roles()->detach();
 
-Note that this operation does not delete records from the `roles` table, but only from the pivot table.
+Σημειώστε ότι με αυτό τον τρόπο δεν διαγράφετε δεδομένα από τον πίνακα `roles`, αλλά μόνο από τον πίνακα pivot.
 
-#### Defining A Custom Pivot Model
+#### Ορίζοντας έναν προσαρμοσμένο πίνακα Pivot
 
-Laravel also allows you to define a custom Pivot model. To define a custom model, first create your own "Base" model class that extends `Eloquent`. In your other Eloquent models, extend this custom base model instead of the default `Eloquent` base. In your base model, add the following function that returns an instance of your custom Pivot model:
+Το Laravel επίσης σας επιτρέπει να ορίσετε ένα προσαρμοσμένο πίνακα Pivot. Για να ορίσετε ένα προσαρμοσμένο μοντέλο, πρώτα δημιουργήστε την δική σας κλάση μοντέλου "Base" η οποία θα κάνει extends την κλάση `Eloquent`. Στα υπόλοιπα Eloquent μοντέλα σας, κάνετε extend αυτό το προσαρμοσμένο μοντέλο base αντί για το προεπιλεγμένο μοντέλο `Eloquent`. Μέσα στο base μοντέλο σας, προσθέστε την ακόλουθη λειτουργία η οποία σας επιστρέφει ένα στιγμιότυπο του προσαρμοσμένου Pivot μοντέλου σας:
 
 	public function newPivot(Model $parent, array $attributes, $table, $exists)
 	{
@@ -876,13 +876,13 @@ Laravel also allows you to define a custom Pivot model. To define a custom model
 	}
 
 <a name="collections"></a>
-## Collections
+## Συλλογές
 
-All multi-result sets returned by Eloquent, either via the `get` method or a `relationship`, will return a collection object. This object implements the `IteratorAggregate` PHP interface so it can be iterated over like an array. However, this object also has a variety of other helpful methods for working with result sets.
+Όλα τα σύνολα αποτελεσμάτων που επιστρέφονται από το Eloquent, είτε μέσω της μεθόδου `get` ή μιας `συσχέτισης`, θα επιστρέψουν μια συλλογή από αντικείμενα. Αυτό το αντικείμενο εκτελεί το `IteratorAggregate` PHP interface και έτσι μπορεί να χρησιμοποιηθεί όπως ένας πίνακας. Παρόλαυτα, αυτό το αντικείμενο έχει μια ποικιλία άλλες χρήσιμες μεθόδους για να δουλέψετε με σύνολα αποτελεσμάτων.
 
-For example, we may determine if a result set contains a given primary key using the `contains` method:
+Για παράδειγμα, μπορούμε να ορίσουμε αν ένα σύνολο αποτελεσμάτων περιέχει ένα δοσμένο πρωτεύον κλειδί χρησιμοποιώντας την μέθοδο `contains`:
 
-#### Checking If A Collection Contains A Key
+#### Ελέγξτε αν μια συλλογή περιέχει ένα κλειδί
 
 	$roles = User::find(1)->roles;
 
@@ -891,28 +891,28 @@ For example, we may determine if a result set contains a given primary key using
 		//
 	}
 
-Collections may also be converted to an array or JSON:
+Οι συλλογές μπορούν επίσης να μετατραπούν σε πίνακα ή JSON:
 
 	$roles = User::find(1)->roles->toArray();
 
 	$roles = User::find(1)->roles->toJson();
 
-If a collection is cast to a string, it will be returned as JSON:
+Αν μια συλλογή είναι 'δεμένη' σε ένα string, θα επιστραφεί σε μορφή JSON:
 
 	$roles = (string) User::find(1)->roles;
 
-Eloquent collections also contain a few helpful methods for looping and filtering the items they contain:
+Οι συλλογές Eloquent περιέχουν επίσης μερικές χρήσιμες μεθόδους για προσπέλαση και φιλτράρισμα των αντικειμένων τα οποία περιέχουν:
 
-#### Iterating Collections
+#### Iterating σε Συλλογές
 
 	$roles = $user->roles->each(function($role)
 	{
 		//
 	});
 
-#### Filtering Collections
+#### Φιλτράροντας Συλλογές
 
-When filtering collections, the callback provided will be used as callback for [array_filter](http://php.net/manual/en/function.array-filter.php).
+Όταν φιλτραρετε συλλογές, το callback που ορίζεται θα χρησιμοποιηθεί ως callback για [array_filter](http://php.net/manual/en/function.array-filter.php).
 
 	$users = $users->filter(function($user)
 	{
@@ -922,9 +922,9 @@ When filtering collections, the callback provided will be used as callback for [
 		}
 	});
 
-> **Note:** When filtering a collection and converting it to JSON, try calling the `values` function first to reset the array's keys.
+> **Σημείωση:** Όταν φιλτράρετε μια συλλογή και την μετατρέπετε σε μορφή JSON, προσπαθήστε να καλέσετε την λειτουργία `values` πρώτα ώστε να επαναφέρετε στην αρχική κατάσταση τα κλειδιά του πίνακα.
 
-#### Applying A Callback To Each Collection Object
+#### Εφαρμόζοντας ένα Callback σε κάθε αντικείμενο μιας συλλογής
 
 	$roles = User::find(1)->roles;
 
@@ -933,16 +933,16 @@ When filtering collections, the callback provided will be used as callback for [
 		//
 	});
 
-#### Sorting A Collection By A Value
+#### Ταξινομώντας μια συλλογή με βάση μια τιμή της
 
 	$roles = $roles->sortBy(function($role)
 	{
 		return $role->created_at;
 	});
 
-Sometimes, you may wish to return a custom Collection object with your own added methods. You may specify this on your Eloquent model by overriding the `newCollection` method:
+Μερικές φορές, μπορεί να θέλετε να επιστρέψετε ένα προσαρμοσμένο αντικείμενο Collection προσθέτοντας μέσα σε αυτό τις δικές σας μεθόδους. Μπορείτε να το ορίσετε αυτό στο μοντέλο Eloquent παρακάμπτοντας την μέθοδο `newCollection`:
 
-#### Returning A Custom Collection Type
+#### Επιστρέφοντας ένα προσαρμοσμένο τύπο συλλογής
 
 	class User extends Eloquent {
 
@@ -956,9 +956,9 @@ Sometimes, you may wish to return a custom Collection object with your own added
 <a name="accessors-and-mutators"></a>
 ## Accessors & Mutators
 
-Eloquent provides a convenient way to transform your model attributes when getting or setting them. Simply define a `getFooAttribute` method on your model to declare an accessor. Keep in mind that the methods should follow camel-casing, even though your database columns are snake-case:
+Το Eloquent μας δίνει έναν εύκολο τρόπο για να μεταμορφώσετε τα χαρακτηριστικά των μοντέλων σας όταν τα λαμβάνετε ή τα ορίζετε. Απλά χρησιμοποιήστε την μέθοδο `getFooAttribute` μέσα στο μοντέλο σας για να ορίσετε έναν accessor. Σημειώστε ότι οι μέθοδοι πρέπει να ακολουθούν το μοτίβο camel-casing, παρόλο που οι στήλες των βάσεων δεδομένων σας έχουν το μοτίβο snake-case:
 
-#### Defining An Accessor
+#### Ορίζοντας εναν Accessor
 
 	class User extends Eloquent {
 
@@ -969,11 +969,11 @@ Eloquent provides a convenient way to transform your model attributes when getti
 
 	}
 
-In the example above, the `first_name` column has an accessor. Note that the value of the attribute is passed to the accessor.
+Στο παραπάνω παράδειγμα, η στήλη `first_name` έχει έναν accessor. Σημειώστε ότι η τιμή του χαρακτηριστικού δίνετε στον accessor.
 
-Mutators are declared in a similar fashion:
+Οι Mutators ορίζονται με παρόμοιο τρόπο:
 
-#### Defining A Mutator
+#### Ορίζοντας έναν Mutator
 
 	class User extends Eloquent {
 
@@ -985,20 +985,20 @@ Mutators are declared in a similar fashion:
 	}
 
 <a name="date-mutators"></a>
-## Date Mutators
+## Mutators ημερομηνίας
 
-By default, Eloquent will convert the `created_at`, `updated_at`, and `deleted_at` columns to instances of [Carbon](https://github.com/briannesbitt/Carbon), which provides an assortment of helpful methods, and extends the native PHP `DateTime` class.
+Απο προεπιλογή, το Eloquent θα μετατρέψει τις στήλες `created_at`, `updated_at`, και `deleted_at` σε στιγμιότυπα του [Carbon](https://github.com/briannesbitt/Carbon), το οποίο μας δίνει ένα πλήθος χρήσιμων μεθόδων, και κάνει extend την native κλάση PHP `DateTime`.
 
-You may customize which fields are automatically mutated, and even completely disable this mutation, by overriding the `getDates` method of the model:
+Μπορείτε να καθορίσετε ποιά πεδία γίνονται αυτόματα mutated, ή ακόμα και να απενεργοποιήσετε τελείως το mutation, παρακάμπτοντας την μέθοδο `getDates` του μοντέλου:
 
 	public function getDates()
 	{
 		return array('created_at');
 	}
 
-When a column is considered a date, you may set its value to a UNIX timetamp, date string (`Y-m-d`), date-time string, and of course a `DateTime` / `Carbon` instance.
+Όταν μια στήλη θεωρείτε πεδίο ημερομηνίας, μπορείτε να ορίσετε την τιμή της σε ένα UNIX timetamp, string ημερομηνίας (`Y-m-d`), date-time string, και φυσικά ως ένα στιγμιότυπο `DateTime` / `Carbon`.
 
-To totally disable date mutations, simply return an empty array from the `getDates` method:
+Για να απενεργοποιήσετε πλήρως τα mutations ημερομηνίας, απλά επιστρέψτε έναν κενό πίνακα μέσω της μεθόδου `getDates`:
 
 	public function getDates()
 	{
@@ -1006,24 +1006,24 @@ To totally disable date mutations, simply return an empty array from the `getDat
 	}
 
 <a name="model-events"></a>
-## Model Events
+## Μοντέλο συμβάντος
 
-Eloquent models fire several events, allowing you to hook into various points in the model's lifecycle using the following methods: `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring`, `restored`.
+Τα Eloquent μοντέλα χρησιμοποιούν αρκετά συμβάντα ('events'), και σας επιτρέπουν να απαγκιστρωθείτε σε διάφορα σημεία του χρόνου ζωής ενός μοντέλου χρησιμοποιώντας τις ακόλουθες μεθόδους: `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring`, `restored`.
 
-Whenever a new item is saved for the first time, the `creating` and `created` events will fire. If an item is not new and the `save` method is called, the `updating` / `updated` events will fire. In both cases, the `saving` / `saved` events will fire.
+Οποτεδήποτε ένα νέο αντικείμενο αποθηκεύετε για πρώτη φορά, τα συμβάντα με όνομα `creating` και `created` θα ενεργοποιηθούν. Αν ένα αντικείμενο δεν είναι καινούργιο και γίνει κλήση της μεθόδου `save`, τα συμβάντα `updating` / `updated` θα ενεργοποιηθούν. Και στις δύο περιπτώσεις, τα συμβάντα `saving` / `saved` θα ενεργοποιηθούν.
 
-If `false` is returned from the `creating`, `updating`, `saving`, or `deleting` events, the action will be cancelled:
+Αν επιστραφεί η τιμή `false` από τα συμβάντα `creating`, `updating`, `saving`, ή `deleting`, η δράση θα ακυρωθεί:
 
-#### Cancelling Save Operations Via Events
+#### Ακυρώνοτνας λειτουργίες αποθήκευσης μέσω συμβάντων
 
 	User::creating(function($user)
 	{
 		if ( ! $user->isValid()) return false;
 	});
 
-Eloquent models also contain a static `boot` method, which may provide a convenient place to register your event bindings.
+Τα Eloquent μοντέλα περιέχουν επίσης μια στατική μέθοδο `boot`, η οποία μπορεί να θεωρηθεί ένα καλό μέρος για να εγγράψετε τα δικά σας event bindings.
 
-#### Setting A Model Boot Method
+#### Ορίζοντας μια μέθοδο μοντέλου Boot
 
 	class User extends Eloquent {
 
@@ -1037,11 +1037,11 @@ Eloquent models also contain a static `boot` method, which may provide a conveni
 	}
 
 <a name="model-observers"></a>
-## Model Observers
+## Μοντέλο παρατηρητής
 
-To consolidate the handling of model events, you may register a model observer. An observer class may have methods that correspond to the various model events. For example, `creating`, `updating`, `saving` methods may be on an observer, in addition to any other model event name.
+Για να εδραιώσετε τον χειρισμό των συμβάντων σε ένα μοντέλο, μπορείτε να εγγράψετε ένα μοντέλο παρατηρητή. Μια κλάση παρατήρησης μπορεί να περιέχει μεθόδους που ανταποκρίνονται στα διάφορα συμβάντα ενός μοντέλου. Για παράδειγμα, οι μέθοδοι `creating`, `updating`, `saving` μπορεί να βρίσκονται σε έναν παρατηρητή, επιπρόσθετα με οποιοδήποτε άλλο όνομα συμβάντος.
 
-So, for example, a model observer might look like this:
+Έτσι, για παράδειγμα, ένα μοντέλο παρατηρητής μπορεί να μοιάζει κάπως έτσι:
 
 	class UserObserver {
 
@@ -1057,43 +1057,43 @@ So, for example, a model observer might look like this:
 
 	}
 
-You may register an observer instance using the `observe` method:
+Μπορείτε να εγγράψετε ένα στιγμιότυπο παρατηρητή χρησιμοποιώντας την μέθοδο `observe`:
 
 	User::observe(new UserObserver);
 
 <a name="converting-to-arrays-or-json"></a>
-## Converting To Arrays / JSON
+## Μετατρέποντας σε Πίνακες / JSON
 
-When building JSON APIs, you may often need to convert your models and relationships to arrays or JSON. So, Eloquent includes methods for doing so. To convert a model and its loaded relationship to an array, you may use the `toArray` method:
+Όταν χτίζετε ένα JSON API, μπορεί να χρειαστεί να μετατρέψετε τα μοντέλα σας και τις συσχετίσεις σας σε πίνακες ή σε μορφή JSON. Έτσι, το Eloquent περιλαμβάνει μεθόδους για να το κάνετε αυτό. Για να μετατρέψετε ένα μοντέλο και τις συσχετίσεις του σε μορφή πίνακα, μπορείτε να χρησιμοποιήσετε την μέθοδο `toArray`:
 
-#### Converting A Model To An Array
+#### Μετατρέποντας ένα μοντέλο σε μορφή πίνακα
 
 	$user = User::with('roles')->first();
 
 	return $user->toArray();
 
-Note that entire collections of models may also be converted to arrays:
+Σημειώστε ότι ολόκληρα collections ενός μοντέλου μπορούν επίσης να μετατραπούν σε μορφή πινάκων:
 
 	return User::all()->toArray();
 
-To convert a model to JSON, you may use the `toJson` method:
+Για να μετατρέψετε ένα μοντέλο σε μορφή JSON, μπορείτε να χρησιμοποιήσετε την μέθοδο `toJson`:
 
-#### Converting A Model To JSON
+#### Μετατρέποντας ένα μοντέλο σε μορφή JSON
 
 	return User::find(1)->toJson();
 
-Note that when a model or collection is cast to a string, it will be converted to JSON, meaning you can return Eloquent objects directly from your application's routes!
+Σημειώστε ότι όταν ένα μοντέλο ή μια συλλογή μετατρέπετε σε string, θα μετατραπεί σε μορφή JSON και έτσι θα μπορείτε να ανακτήσετε αντικείμενα Eloquent απευθείας μέσα από τα routes της εφαρμογής σας!
 
-#### Returning A Model From A Route
+#### Ανακτώντας ένα μοντέλο μέσα από ένα Route
 
 	Route::get('users', function()
 	{
 		return User::all();
 	});
 
-Sometimes you may wish to limit the attributes that are included in your model's array or JSON form, such as passwords. To do so, add a `hidden` property definition to your model:
+Μερικές φορές μπορεί να θελήσετε να περιορίσετε τα χαρακτηριστικά τα οποία περιλαμβάνονται στον πίνακα του μοντέλου σας ή στην μορφή JSON, όπως για παράδειγμα οι κωδικοί. Για να το κάνετε αυτό, προσθέστε την ιδιότητα `hidden` στο μοντέλο σας:
 
-#### Hiding Attributes From Array Or JSON Conversion
+#### Αποκρύπτοντας χαρακτηριστικά από μετατροπές σε πίνακα ή JSON μορφή
 
 	class User extends Eloquent {
 
@@ -1101,22 +1101,22 @@ Sometimes you may wish to limit the attributes that are included in your model's
 
 	}
 
-> **Note:** When hiding relationships, use the relationship's **method** name, not the dynamic accessor name.
+> **Σημείωση:** Όταν αποκρύπτετε συσχετίσεις, χρησιμοποιήστε το όνομα **μεθόδου** της συσχέτισης, και όχι το δυναμικό όνομα accessor.
 
-Alternatively, you may use the `visible` property to define a white-list:
+Εναλλακτικά, μπορείτε να χρησιμοποιήσετε την ιδιότητα `visible` για να ορίσετε μια white-list:
 
 	protected $visible = array('first_name', 'last_name');
 
 <a name="array-appends"></a>
-Occasionally, you may need to add array attributes that do not have a corresponding column in your database. To do so, simply define an accessor for the value:
+Περιστασιακά, μπορεί να χρειαστεί να προσθέσετε χαρακτηριστικά πίνακα τα οποία δεν ανταποκρίνονται σε κάποια στήλη της βάσης δεδομένων σας. Για να το κάνετε αυτό, απλά ορίστε έναν accessor για την τιμή:
 
 	public function getIsAdminAttribute()
 	{
 		return $this->attributes['admin'] == 'yes';
 	}
 
-Once you have created the accessor, just add the value to the `appends` property on the model:
+Όταν δημιουργήσετε τον accessor, απλά προσθέστε μια τιμή στην ιδιότητα `appends` μέσα στο μοντέλο:
 
 	protected $appends = array('is_admin');
 
-Once the attribute has been added to the `appends` list, it will be included in both the model's array and JSON forms.
+Όταν το χαρακτηριστικό έχει εισαχθεί στην λίστα με όνομα `appends`, θα συμπεριληφθεί και σε μορφή πίνακα και σε μορφή JSON.
