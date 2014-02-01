@@ -4,3 +4,5 @@ composer.phar
 composer.lock
 .DS_Store
 Thumbs.db
+/app/config/packages/thujohn/twitter/config.php
+/app/config/database.php
