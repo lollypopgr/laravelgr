@@ -16,7 +16,13 @@ use \laravelgr\picturefill\PictureFill;
 Route::get('/', function()
 {
 
-    return View::make('homepage');
+    $twitter = new \laravelgr\twitterfans\TwitterFans;
+    $devs = $twitter->sumDevs();
+
+    $twitter->allDevs();
+
+    dd('stop');
+    return View::make('homepage')->with('devscount',$devs);
 });
 
 Route::get('/docs/'.'{chapter?}', 'DocumentationController@showDocs');
