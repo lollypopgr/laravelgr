@@ -15,6 +15,7 @@ use \laravelgr\picturefill\PictureFill;
 
 Route::get('/', function()
 {
+
     return View::make('homepage');
 });
 
