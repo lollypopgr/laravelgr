@@ -15,13 +15,9 @@ use \laravelgr\picturefill\PictureFill;
 
 Route::get('/', function()
 {
-
     $twitter = new \laravelgr\twitterfans\TwitterFans;
     $devs = $twitter->sumDevs();
 
-    $twitter->allDevs();
-
-    dd('stop');
     return View::make('homepage')->with('devscount',$devs);
 });
 
