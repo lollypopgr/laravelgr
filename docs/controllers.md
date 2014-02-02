@@ -1,24 +1,24 @@
 # Controllers
 
-- [Basic Controllers](#basic-controllers)
-- [Controller Filters](#controller-filters)
+- [Βασικοί Controllers](#basic-controllers)
+- [Φίλτρα για Controller](#controller-filters)
 - [RESTful Controllers](#restful-controllers)
 - [Resource Controllers](#resource-controllers)
-- [Handling Missing Methods](#handling-missing-methods)
+- [Πως να χειρίζεστε χαμένες μεθόδους](#handling-missing-methods)
 
 <a name="basic-controllers"></a>
-## Basic Controllers
+## Βασικοί Controllers
 
-Instead of defining all of your route-level logic in a single `routes.php` file, you may wish to organize this behavior using Controller classes. Controllers can group related route logic into a class, as well as take advantage of more advanced framework features such as automatic [dependency injection](/docs/ioc).
+Αντί να έχετε την όλη την λογική της εφαρμογής σας μέσα στο αρχείο `routes.php`, μπορείτε να την οργανώσετε με την χρήση των Controller. Οι Controllers μπορούν να ομαδοποιήσουν την λογική των route μέσα σε μια κλάση, καθώς επίσης και να εκμεταλλευτούν προηγμένες λειτουργίες του framework όπως για παράδειγμα το [dependency injection](/docs/ioc).
 
-Controllers are typically stored in the `app/controllers` directory, and this directory is registered in the `classmap` option of your `composer.json` file by default.
+Οι Controllers συνήθως αποθηκεύονται στον φάκελο `app/controllers`, ο οποίος είναι εγγεγραμμένος στην επιλογή `classmap` μέσα στο αρχείο `composer.json` ως προεπιλογή.
 
-Here is an example of a basic controller class:
+Παρακάτω είναι ένα παράδειγμα μια βασικής κλάσης ενός controller:
 
 	class UserController extends BaseController {
 
 		/**
-		 * Show the profile for the given user.
+	     * Show the profile for the given user.
 		 */
 		public function showProfile($id)
 		{
@@ -29,40 +29,40 @@ Here is an example of a basic controller class:
 
 	}
 
-All controllers should extend the `BaseController` class. The `BaseController` is also stored in the `app/controllers` directory, and may be used as a place to put shared controller logic. The `BaseController` extends the framework's `Controller` class. Now, We can route to this controller action like so:
+Όλοι οι controllers πρέπει να κάνουν extend την κλάση `BaseController`. Η κλάση `BaseController` είναι επίσης αποθηκευμένη μέσα στον φάκελο `app/controllers`, και μπορεί να χρησιμοποιηθεί ως μέρος για να αποθηκεύετε μια κοινόχρηστη λογική ενός controller. Επίσης, η κλάση `BaseController` κάνει extend την κλάση `Controller` του framework. Μπορούμε να κάνουμε χρήση της μεθόδου του controller μέσα από το αρχείο του route μας κάπως έτσι:
 
 	Route::get('user/{id}', 'UserController@showProfile');
 
-If you choose to nest or organize your controller using PHP namespaces, simply use the fully qualified class name when defining the route:
+Αν διαλέξετε να οργανώσετε τον controller σας με χρήση PHP namespaces, απλά χρησιμοποιήστε ολόκληρο το 'μονοπάτι' προς την κλάση όταν ορίζετε το route:
 
 	Route::get('foo', 'Namespace\FooController@method');
 
-> **Note:** Since we're using [Composer](http://getcomposer.org) to auto-load our PHP classes, controllers may live anywhere on the file system, as long as composer knows how to load them. The controller directory does not enforce any folder structure for your application. Routing to controllers is entirely de-coupled from the file system.
+> **Σημείωση:** Μιας και χρησιμοποιούμε τον [Composer](http://getcomposer.org) για να φορτώνονται αυτόματα οι PHP κλάσεις μας, οι controllers μπορούν να βρίσκονται οπουδήποτε μέσα το σύστημά μας, αρκεί ο composer να γνωρίζει που να μπορεί να τους βρει και να τους φορτώσει. Ο φάκελος controller δεν σας επιβάλλει κάποιον ιδιαίτερο τρόπο δόμησης της εφαρμογής σας.
 
-You may also specify names on controller routes:
+Μπορείτε επίσης να δώσετε ονόματα στα routes των controller σας:
 
 	Route::get('foo', array('uses' => 'FooController@method',
 											'as' => 'name'));
 
-To generate a URL to a controller action, you may use the `URL::action` method or the `action` helper method:
+Για να παράξετε ένα URL προς μια δράση ενός controller, μπορείτε να χρησιμοποιήσετε την μέθοδο `URL::action` ή την βοηθητική μέθοδο `action`:
 
 	$url = URL::action('FooController@method');
 
 	$url = action('FooController@method');
 
-You may access the name of the controller action being run using the `currentRouteAction` method:
+Μπορείτε να έχετε πρόσβαση στο όνομα δράσης ενός controller με την χρήση της μεθόδου `currentRouteAction`:
 
 	$action = Route::currentRouteAction();
 
 <a name="controller-filters"></a>
-## Controller Filters
+## Φίλτρα για Controller
 
-[Filters](/docs/routing#route-filters) may be specified on controller routes similar to "regular" routes:
+Τα [φίλτρα](/docs/routing#route-filters) μπορούν να οριστούν σε ένα route ενός controller παρόμοια με τα κανονικά routes:
 
 	Route::get('profile', array('before' => 'auth',
 				'uses' => 'UserController@showProfile'));
 
-However, you may also specify filters from within your controller:
+Παρόλαυτα, μπορείτε επίσης να ορίσετε φίλτρα μέσα από τον ίδιο τον controller σας:
 
 	class UserController extends BaseController {
 
@@ -81,7 +81,7 @@ However, you may also specify filters from within your controller:
 
 	}
 
-You may also specify controller filters inline using a Closure:
+Μπορείτε επίσης να ορίσετε φίλτρα για τον controller σας με την χρήση Closure:
 
 	class UserController extends BaseController {
 
@@ -98,7 +98,7 @@ You may also specify controller filters inline using a Closure:
 
 	}
 
-If you would like to use another method on the controller as a filter, you may use `@` syntax to define the filter:
+Αν θέλετε να χρησιμοποιήσετε μια άλλη μέθοδο μέσα στον controller σας ως φίλτρο, μπορείτε να το κάνετε με την χρήση της σύνταξης `@` :
 
 	class UserController extends BaseController {
 
@@ -123,13 +123,13 @@ If you would like to use another method on the controller as a filter, you may u
 <a name="restful-controllers"></a>
 ## RESTful Controllers
 
-Laravel allows you to easily define a single route to handle every action in a controller using simple, REST naming conventions. First, define the route using the `Route::controller` method:
+Το Laravel σας επιτρέπει να ορίσετε εύκολα ένα απλό route για να χειρίζεται κάθε δράση μέσα στον controller χρησιμοποιώντας απλές ονομασίες σε στυλ REST. Καταρχήν, ορίστε το route με την χρήση της μεθόδου `Route::controller`:
 
-#### Defining A RESTful Controller
+#### Ορίζοντας έναν RESTful Controller
 
 	Route::controller('users', 'UserController');
 
-The `controller` method accepts two arguments. The first is the base URI the controller handles, while the second is the class name of the controller. Next, just add methods to your controller, prefixed with the HTTP verb they respond to:
+Η μέθοδος `controller` μπορεί να δεχθεί δύο μεταβλητές. Η πρώτη μεταβλητή είναι ένα βασικό URI που χειρίζεται ο controller, ενώ η δεύτερη μεταβλητή είναι το όνομα της κλάσης του controller. Στην συνέχεια, απλά προσθέστε μεθόδους στον controller σας, βάζοντας ως πρόθεμα το HTTP ρήμα στο οποίο ανταποκρίνονται:
 
 	class UserController extends BaseController {
 
@@ -145,28 +145,28 @@ The `controller` method accepts two arguments. The first is the base URI the con
 
 	}
 
-The `index` methods will respond to the root URI handled by the controller, which, in this case, is `users`.
+Οι μέθοδοι `index` ανταποκρίνονται στο αρχικό URI το οποίο χειρίζεται ο controller, που σε αυτή την περίπτωση έχει την ονομασία `users`.
 
-If your controller action contains multiple words, you may access the action using "dash" syntax in the URI. For example, the following controller action on our `UserController` would respond to the `users/admin-profile` URI:
+Αν η δράση του controller σας περιέχει πολλές λέξεις, μπορείτε να έχετε πρόσβαση στην δράση αυτή με την χρήση σύνταξης "dash" στο URI. Για παράδειγμα, η παρακάτω δράση μέσα στον controller με όνομα `UserController` θα ανταποκρίνεται στο URI με όνομα `users/admin-profile`:
 
 	public function getAdminProfile() {}
 
 <a name="resource-controllers"></a>
 ## Resource Controllers
 
-Resource controllers make it easier to build RESTful controllers around resources. For example, you may wish to create a controller that manages "photos" stored by your application. Using the `controller:make` command via the Artisan CLI and the `Route::resource` method, we can quickly create such a controller.
+Οι Resource controllers καταστούν ευκολότερη την κατασκευή των RESTful controllers με βάση τα resources. Για παράδειγμα, μπορείτε να θελήσετε να κατασκευάσετε έναν controller που διαχειρίζεται τις φωτογραφίες ("photos") που αποθηκεύονται στην εφαρμογή σας. Χρησιμοποιώντας την εντολή `controller:make` μέσα από την γραμή εντολών Artisan και την μέθοδο `Route::resource`, μπορούμε γρήγορα-γρήγορα να δημιουργήσουμε έναν τέτοιο controller.
 
-To create the controller via the command line, execute the following command:
+Για να δημιουργήσετε τον controller μέσω της γραμμής εντολών, εκτελέστε την παρακάτω εντολή:
 
 	php artisan controller:make PhotoController
 
-Now we can register a resourceful route to the controller:
+Τώρα μπορούμε να εγγράψουμε ένα resourceful route για τον controller μας:
 
 	Route::resource('photo', 'PhotoController');
 
-This single route declaration creates multiple routes to handle a variety of RESTful actions on the photo resource. Likewise, the generated controller will already have stubbed methods for each of these actions with notes informing you which URIs and verbs they handle.
+Αυτή η απλή δήλωση του route δημιουργεί νέα πολλαπλά, βοηθητικά routes για να χειριστούν μια πληθώρα δράσεων RESTful στο resource φωτογραφιών (photo). Παρομοίως, ο controller θα έχει ήδη καταχωρημένες μεθόδους για κάθε μια από αυτές τις δράσεις με υποσημειώσεις που σας πληροφορούν για το ποιά URIs και ποιά ρήματα χειρίζονται.
 
-#### Actions Handled By Resource Controller
+#### Δράσης τις οποίες χειρίζεται ένα Resource Controller
 
 Verb      | Path                        | Action       | Route Name
 ----------|-----------------------------|--------------|---------------------
@@ -178,13 +178,13 @@ GET       | /resource/{resource}/edit   | edit         | resource.edit
 PUT/PATCH | /resource/{resource}        | update       | resource.update
 DELETE    | /resource/{resource}        | destroy      | resource.destroy
 
-Sometimes you may only need to handle a subset of the resource actions:
+Κάποιες φορές μπορεί να χρειαστεί να χειριστείτε ένα υποσύνολο των δράσεων του resource:
 
 	php artisan controller:make PhotoController --only=index,show
 
 	php artisan controller:make PhotoController --except=index
 
-And, you may also specify a subset of actions to handle on the route:
+Και μπορείτε επίσης να ορίσετε ένα υποσύνολο από δράσεις για να χειριστείτε μέσα στο route:
 
 	Route::resource('photo', 'PhotoController',
 					array('only' => array('index', 'show')));
@@ -192,17 +192,17 @@ And, you may also specify a subset of actions to handle on the route:
 	Route::resource('photo', 'PhotoController',
 					array('except' => array('create', 'store', 'update', 'delete')));
 
-By default, all resource controller actions have a route name; however, you can override these names by passing a `names` array with your options:
+Ως προεπιλογή, όλες οι δράσεις ενός resource controller έχουν ένα όνομα route; παρόλαυτα, μπορείτε να το παρακάμψετε και να ορίσετε ένα δικό σας όνομα, δίνοντας ως παράμετρο έναν πίνακα με όνομα `names` μαζί με τις επιλογές σας:
 
 	Route::resource('photo', 'PhotoController',
 					array('names' => array('create' => 'photo.build'));
 
 <a name="handling-missing-methods"></a>
-## Handling Missing Methods
+## Πως να χειρίζεστε χαμένες μεθόδους
 
-A catch-all method may be defined which will be called when no other matching method is found on a given controller. The method should be named `missingMethod`, and receives the method and parameter array for the request:
+Μπορείτε να ορίσετε μια μέθοδο η οποία θα καλείται όταν δεν μπορεί να ταυτοποιηθεί το όνομα κάποιας άλλης μεθόδου μέσα στον ζητούμενο controller (Catch-all method). Η μέθοδος πρέπει να ονομαστεί `missingMethod`, και να λαμβάνει ως παράμετρο έναν πίνακα από τιμές:
 
-#### Defining A Catch-All Method
+#### Ορίζοντας μια μέθοδο Catch-All
 
 	public function missingMethod($parameters = array())
 	{
