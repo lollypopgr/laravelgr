@@ -122,3 +122,12 @@ footer{
   text-align: center;
   position:relative;
 }
+
+.devthumbs{
+    width:100%;
+    z-index: 5;
+    position:relative;
+    img{
+      width:100%;
+    }
+}
