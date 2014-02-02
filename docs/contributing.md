@@ -1,3 +1,3 @@
-# Contribution Guidelines
+# Συμβουλές για το πώς να συνεισφέρετε στο project
 
-If you are submitting documentation for the **current stable release**, submit it to the corresponding branch. For example, documentation for Laravel 4.1 would be submitted to the `4.1` branch. Documentation intended for the next release of Laravel should be submitted to the `master` branch.
+Αν θελήσετε να υποβάλλετε κάποιο documentation για την **τρέχουσα σταθερή έκδοση**, πρέπει να το υποβάλλετε στο branch που αντιστοιχεί. Για παράδειγμα, το documentation για το Laravel 4.1 θα πρέπει να υποβληθεί το branch με όνομα `4.1`. Οτιδήποτε αφορά το documentation για την επόμενη έκδοση του Laravel, πρέπει να υποβληθεί στο branch με όνομα `master`.
