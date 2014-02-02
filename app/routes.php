@@ -22,3 +22,7 @@ Route::get('/', function()
 });
 
 Route::get('/docs/'.'{chapter?}', 'DocumentationController@showDocs');
+
+Route::get('/test',function(){
+    return "test!!";
+});

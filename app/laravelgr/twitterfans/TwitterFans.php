@@ -41,16 +41,16 @@ class TwitterFans {
 
     /**
      * Grab all users specific from Devs-list
-     * @return [type] [description]
+     * @return array of pics
      */
-    public function allDevs(){
+    public function devPics(){
 
         $devs = Twitter::getListMembers(['list_id'=>Config::get('site.list_id'),'slug'=>'greek-devs-laravel']);
-        //dd($devs->users[0]);
         foreach($devs->users as $dev){
-            echo '<img src="'.$dev->profile_image_url.'">';
+            $pics[] = $dev->profile_image_url;
         }
-
+        shuffle($pics);
+        return $pics;
     }
 
 }
