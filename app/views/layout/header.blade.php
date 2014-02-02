@@ -13,8 +13,9 @@
                 <div class="large-5 medium-5 small-8 columns">
                     <nav>
                     {{HTML::link("http://www.laravel.com","laravel.com",['target'=>'_blank'])}} ::
-                    {{HTML::link("esotalk","Forum")}} ::
+                    {{HTML::link("forum","Forum")}} ::
                     {{HTML::link("docs","Βοήθεια")}} ::
+                    {{HTML::link("http://laravel.io/bin","Bin")}} ::
                     {{HTML::link("https://www.twitter.com/laravelgr","Twitter",['target'=>'_blank'])}}
                     </nav>
                 </div>
