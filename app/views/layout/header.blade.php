@@ -16,7 +16,6 @@
                     {{HTML::link("forum","Forum")}} ::
                     {{HTML::link("http://laravel.io/bin","Bin")}} ::
                     {{HTML::link("docs","Βοήθεια")}} ::
-                    {{HTML::link("http://laravel.io/bin","Bin")}} ::
                     {{HTML::link("https://www.twitter.com/laravelgr","Twitter",['target'=>'_blank'])}}
                     </nav>
                 </div>
