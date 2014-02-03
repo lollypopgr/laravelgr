@@ -55,7 +55,7 @@
 
 //////////////////////////////
 ///
-/// LARAVEL.GR CUSTOM CSS
+///   LARAVEL.GR CUSTOM CSS
 ///
 ///////////////////////////////
 
@@ -69,7 +69,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  font-family: 'Open Sans Condensed', sans-serif;
+  font-family:  'Open Sans Condensed', sans-serif;
     font-size:1.5em;
 
 }
@@ -129,4 +129,36 @@ footer{
     img{
       width:100%;
     }
+}
+
+footer{
+  font-size: .4em;
+  font-family: Verdana,Arial,serif;
+}
+
+// Media Queries
+//
+@media only screen and (max-width: 950px) {
+  .header{
+    font-size:.85em;
+  }
+}
+
+@media only screen and (max-width: 760px) {
+  .logo{
+    width:100% !important;
+  }
+}
+@media only screen and (max-width: 480px) {
+
+  .logo img{
+    width:90%;
+  }
+  .community {
+    font-size: .9em;
+  }
+  .header nav {
+    margin-top:8px;
+    line-height: 30px;
+  }
 }
