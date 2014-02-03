@@ -1,1 +1,1 @@
-<footer>Made by {{HTML::link('https://www.twitter.com/lollypopgr','@lollypopgr')}}</footer>
+<footer>Designed by {{HTML::link('https://www.twitter.com/lollypopgr','@lollypopgr')}}</footer>

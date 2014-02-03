@@ -5,7 +5,7 @@
                         Η Ελληνική κοινότητα του Laravel
                     </div>
                 </div>
-                <div class="large-2 medium-2 small-2 columns">
+                <div class="large-2 medium-2 small-4 columns">
                     <div class="logo">
                     {{HTML::image('images/laravel-logo-gr.png')}}
                     </div>
