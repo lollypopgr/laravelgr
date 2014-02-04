@@ -18,7 +18,13 @@ Route::get('/', function()
     $twitter = new \laravelgr\twitterfans\TwitterFans;
     $devs = $twitter->sumDevs();
 
-    return View::make('homepage')->with('devscount',$devs);
+    $imagesDir = 'images/themes/';
+
+	$images = glob($imagesDir . '{fans,santorini,athens}.{jpg,jpeg}', GLOB_BRACE);
+
+	$randomImage = $images[array_rand($images)]; // See comments
+
+    return View::make('homepage')->with('devscount',$devs)->with('randomImage', $randomImage);
 });
 
 Route::get('/docs/'.'{chapter?}', 'DocumentationController@showDocs');
